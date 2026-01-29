@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>UniSpace – Your Unified Campus Hub</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 60px 30px; /* ADDED: Padding on all sides */
+  font-family: "Inter", sans-serif;
+  background: #000000; /* Pure black background */
+  min-height: 100vh;
+  scroll-behavior: smooth;
+  position: relative;
+}
+
+/* Optional: Add subtle stars or particles for visual interest */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 20% 30%, rgba(99, 102, 241, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(168, 85, 247, 0.03) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+h1, h2 {
+  font-family: "Playfair Display", serif;
+}
+
+.glass-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto; /* Centered with auto margins */
+  background: rgba(255,255,255,0.98);
+  backdrop-filter: blur(20px);
+  border-radius: 40px;
+  overflow: hidden;
+  box-shadow: 
+    0 40px 100px rgba(99, 102, 241, 0.3),
+    0 0 0 1px rgba(255,255,255,0.1),
+    0 0 60px rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(255,255,255,0.3);
+  position: relative;
+  z-index: 1;
+}
+
+/* FIXED: Sticky Navbar */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255,255,255,.98);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  padding: 1.5rem 2.5rem;
+}
+
+/* Hero */
+.hero {
+  position: relative;
+  padding: 140px 40px;
+  text-align: center;
+  background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url("https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80&w=1600") center/cover no-repeat;
+  color: white;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(99,102,241,.4), rgba(168,85,247,.4));
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 900px;
+  margin: auto;
+}
+
+/* Buttons */
+.btn-primary {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: #fff;
+  padding: 16px 36px;
+  border-radius: 20px;
+  font-weight: 700;
+  transition: .3s;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 15px 35px rgba(99,102,241,.6);
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+}
+
+.btn-secondary {
+  background: white;
+  padding: 16px 36px;
+  border-radius: 20px;
+  font-weight: 600;
+  border: 1px solid rgba(0,0,0,.1);
+  cursor: pointer;
+  transition: .3s;
+}
+
+.btn-secondary:hover {
+  border-color: #6366f1;
+  color: #6366f1;
+}
+
+.btn-outline {
+  background: transparent;
+  padding: 16px 36px;
+  border-radius: 20px;
+  font-weight: 600;
+  border: 2px solid #6366f1;
+  color: #6366f1;
+  cursor: pointer;
+  transition: .3s;
+}
+
+.btn-outline:hover {
+  background: #6366f1;
+  color: white;
+}
+
+/* Cards */
+.card {
+  background: rgba(255,255,255,.9);
+  padding: 48px;
+  border-radius: 40px;
+  transition: .3s;
+  border: 1px solid rgba(99,102,241,0.1);
+  height: 100%;
+}
+
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(99,102,241,.2);
+  background: white;
+  border-color: rgba(99,102,241,0.3);
+}
+
+/* Stats */
+.stat-card {
+  background: linear-gradient(135deg, rgba(99,102,241,.1), rgba(168,85,247,.1));
+  padding: 32px;
+  border-radius: 24px;
+  text-align: center;
+  border: 1px solid rgba(99,102,241,0.1);
+}
+
+/* Scroll animation */
+.animate {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity .8s ease, transform .8s ease;
+}
+
+.animate.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.feature-icon {
+  width: 70px;
+  height: 70px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white;
+  font-size: 28px;
+  box-shadow: 0 8px 20px rgba(99,102,241,0.3);
+}
+
+.testimonial-card {
+  background: rgba(255,255,255,.95);
+  padding: 32px;
+  border-radius: 24px;
+  border-left: 5px solid #6366f1;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+}
+
+.university-badge {
+  display: inline-block;
+  padding: 8px 20px;
+  background: linear-gradient(135deg, rgba(99,102,241,.1), rgba(168,85,247,.1));
+  border-radius: 20px;
+  margin: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #4f46e5;
+  border: 1px solid rgba(99,102,241,0.2);
+  transition: all 0.3s;
+}
+
+.university-badge:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, rgba(99,102,241,.15), rgba(168,85,247,.15));
+  box-shadow: 0 5px 15px rgba(99,102,241,0.1);
+}
+
+/* FIXED: Ensure navbar links are visible and work properly */
+.nav-link {
+  background: none;
+  border: none;
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  color: #4b5563;
+  transition: color 0.3s;
+  padding: 0.5rem 1rem;
+  position: relative;
+}
+
+.nav-link:hover {
+  color: #6366f1;
+}
+
+/* Active nav link */
+.nav-link.active {
+  color: #6366f1;
+}
+
+.nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 1rem;
+  right: 1rem;
+  height: 3px;
+  background: #6366f1;
+  border-radius: 3px;
+}
+
+@media (max-width: 768px) {
+  body { 
+    padding: 30px 20px; /* Adjusted for mobile */
+  }
+  .glass-container { 
+    border-radius: 24px; 
+  }
+  .hero { 
+    padding: 100px 20px; 
+  }
+  .hero h1 { 
+    font-size: 2.5rem; 
+  }
+  .navbar {
+    padding: 1rem;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .navbar > div {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+}
+
+/* For very large screens */
+@media (min-width: 1600px) {
+  body {
+    padding: 80px 40px;
+  }
+  .glass-container {
+    max-width: 1400px;
+  }
+}
+
+/* Optional decorative elements */
+.glow-effect {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.glow-effect::before {
+  content: "";
+  position: absolute;
+  top: -100px;
+  right: -100px;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(99,102,241,0.05) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.glow-effect::after {
+  content: "";
+  position: absolute;
+  bottom: -100px;
+  left: -100px;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(168,85,247,0.04) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+/* Ensure content sections have proper spacing */
+section {
+  position: relative;
+}
+</style>
+</head>
+
+<body>
+
+<!-- Optional decorative glow effects -->
+<div class="glow-effect"></div>
+
+<div class="glass-container">
+
+  <!-- NAVBAR - NOW PROPERLY STICKY -->
+  <nav class="navbar flex justify-between items-center">
+    <div class="flex items-center gap-3 font-bold text-2xl">
+      <div class="w-10 h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl flex items-center justify-center text-white shadow-lg">U</div>
+      <span class="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">UniSpace</span>
+    </div>
+
+    <div class="flex gap-6 items-center">
+      <button class="nav-link" onclick="scrollToSection('home')" data-section="home">Home</button>
+      <button class="nav-link" onclick="scrollToSection('stats')" data-section="stats">Impact</button>
+      <button class="nav-link" onclick="scrollToSection('features')" data-section="features">Features</button>
+      <button class="nav-link" onclick="scrollToSection('universities')" data-section="universities">Universities</button>
+      <button class="nav-link" onclick="scrollToSection('about')" data-section="about">About</button>
+      <button onclick="login()" class="btn-primary shadow-lg">
+        <i class="fas fa-sign-in-alt mr-2"></i> Student Login
+      </button>
+    </div>
+  </nav>
+
+  <!-- HOME / HERO -->
+  <section id="home" class="hero animate">
+    <div class="hero-content">
+      <div class="inline-block px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-sm font-semibold mb-6 border border-white/30">Trusted by 50+ Universities Worldwide</div>
+      
+      <h1 class="text-6xl font-bold mb-8">
+        Your Campus <em class="text-white bg-gradient-to-r from-indigo-300 to-purple-300 bg-clip-text text-transparent">Unified</em> Hub
+      </h1>
+
+      <p class="text-2xl mb-10 text-white/90 leading-relaxed">
+        UniSpace is a private digital ecosystem built exclusively for university students.
+        Buy and sell safely on campus, collaborate academically, track your professional
+        growth, and access trusted student services — all from one beautifully designed platform.
+      </p>
+
+      <p class="text-lg mb-14 text-white/80 max-w-3xl mx-auto">
+        No more juggling WhatsApp groups, spreadsheets, random marketplaces, or scattered tools.
+        UniSpace replaces chaos with clarity and gives students a single source of truth for campus life.
+        Join over 250,000 students who have streamlined their university experience.
+      </p>
+
+      <div class="flex gap-6 justify-center flex-wrap mb-16">
+        <button class="btn-primary shadow-lg" onclick="login()">
+          <i class="fas fa-user-graduate mr-2"></i> Access Your Dashboard
+        </button>
+        <button class="btn-outline" onclick="scrollToSection('features')">
+          <i class="fas fa-play-circle mr-2"></i> How It Works
+        </button>
+      </div>
+      
+      <div class="flex justify-center gap-10 text-white/80">
+        <div class="text-center">
+          <div class="text-3xl font-bold">250K+</div>
+          <div class="text-sm">Active Students</div>
+        </div>
+        <div class="text-center">
+          <div class="text-3xl font-bold">50+</div>
+          <div class="text-sm">Partner Universities</div>
+        </div>
+        <div class="text-center">
+          <div class="text-3xl font-bold">2M+</div>
+          <div class="text-sm">Transactions Completed</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS SECTION -->
+  <section id="stats" class="py-20 px-10 bg-gradient-to-br from-white to-indigo-50 animate">
+    <div class="text-center mb-16">
+      <h2 class="text-5xl font-bold mb-6">Proven Impact Across Campuses</h2>
+      <p class="text-xl text-slate-600 max-w-3xl mx-auto">
+        UniSpace isn't just another app—it's a movement transforming how students experience university life.
+      </p>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-5xl mx-auto">
+      <div class="stat-card animate">
+        <div class="text-4xl font-bold text-indigo-600 mb-2">85%</div>
+        <div class="font-semibold mb-2">Cost Reduction</div>
+        <p class="text-sm text-slate-600">Students save on textbooks & essentials through campus marketplace</p>
+      </div>
+      
+      <div class="stat-card animate">
+        <div class="text-4xl font-bold text-indigo-600 mb-2">63%</div>
+        <div class="font-semibold mb-2">Academic Improvement</div>
+        <p class="text-sm text-slate-600">Report better grades using Study Pool resources</p>
+      </div>
+      
+      <div class="stat-card animate">
+        <div class="text-4xl font-bold text-indigo-600 mb-2">92%</div>
+        <div class="font-semibold mb-2">Verified Safety</div>
+        <p class="text-sm text-slate-600">Transactions completed without incidents</p>
+      </div>
+      
+      <div class="stat-card animate">
+        <div class="text-4xl font-bold text-indigo-600 mb-2">40%</div>
+        <div class="font-semibold mb-2">Faster Job Placement</div>
+        <p class="text-sm text-slate-600">Students using Career Tracker secure roles quicker</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features" class="py-28 px-10 bg-white/40 animate">
+    <div class="text-center mb-20">
+      <h2 class="text-5xl font-bold mb-6">The Complete Student Toolkit</h2>
+      <p class="text-xl text-slate-600 max-w-3xl mx-auto">
+        UniSpace is not a single app — it's a modular ecosystem designed to support
+        every stage of student life, from orientation to graduation and beyond.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+      <div class="card animate">
+        <div class="feature-icon">
+          <i class="fas fa-store"></i>
+        </div>
+        <h3 class="text-2xl font-bold mb-4">Campus Marketplace</h3>
+        <p class="text-slate-700 leading-relaxed mb-4">
+          Buy, sell, or exchange textbooks, electronics, furniture, and daily essentials
+          within your university. No shipping, no scams — just verified students on your campus.
+        </p>
+        <ul class="text-slate-600 text-sm space-y-2">
+          <li><i class="fas fa-check-circle text-green-500 mr-2"></i> Price comparison tools</li>
+          <li><i class="fas fa-check-circle text-green-500 mr-2"></i> Safe meetup scheduling</li>
+          <li><i class="fas fa-check-circle text-green-500 mr-2"></i> Student reviews & ratings</li>
+        </ul>
+      </div>
+
+      <div class="card animate">
+        <div class="feature-icon">
+          <i class="fas fa-handshake"></i>
+        </div>
+        <h3 class="text-2xl font-bold mb-4">Student Services</h3>
+        <p class="text-slate-700 leading-relaxed mb-4">
+          Find or offer services such as tutoring, design work, coding help, photography,
+          or personal services. Turn student skills into real income opportunities.
+        </p>
+        <ul class="text-slate-600 text-sm space-y-2">
+          <li><i class="fas fa-check-circle text-green-500 mr-2"></i> Portfolio showcases</li>
+          <li><i class="fas fa-check-circle text-green-500 mr-2"></i> Secure payment processing</li>
+          <li><i class="fas fa-check-circle text-green-500 mr-2"></i> Service level agreements</li>
+        </ul>
+      </div>
+
+      <div class="card animate">
+        <div class="feature-icon">
+          <i class="fas fa-graduation-cap"></i>
+        </div>
+        <h3 class="text-2xl font-bold mb-4">Study Pool</h3>
+        <p class="text-slate-700 leading-relaxed mb-4">
+          Access verified lecture notes, exam prep materials, and course guides contributed
+          by top-performing students. Learn smarter, not harder.
+        </p>
+        <ul class="text-slate-600 text-sm space-y-2">
+          <li><i class="fas fa-check-circle text-green-500 mr-2"></i> Peer-reviewed materials</li>
+          <li><i class="fas fa-check-circle text-green-500 mr-2"></i> Department-specific resources</li>
+          <li><i class="fas fa-check-circle text-green-500 mr-2"></i> Professor-approved content</li>
+        </ul>
+      </div>
+
+      <div class="card animate">
+        <div class="feature-icon">
+          <i class="fas fa-briefcase"></i>
+        </div>
+        <h3 class="text-2xl font-bold mb-4">Career Accelerator</h3>
+        <p class="text-slate-700 leading-relaxed mb-4">
+          Track applications, deadlines, interviews, and outcomes in one private dashboard.
+          Build a structured approach to your professional growth.
+        </p>
+        <ul class="text-slate-600 text-sm space-y-2">
+          <li><i class="fas fa-check-circle text-green-500 mr-2"></i> Automated deadline reminders</li>
+          <li><i class="fas fa-check-circle text-green-500 mr-2"></i> Interview preparation tools</li>
+          <li><i class="fas fa-check-circle text-green-500 mr-2"></i> Alumni networking features</li>
+        </ul>
+      </div>
+
+      <div class="card animate">
+        <div class="feature-icon">
+          <i class="fas fa-chart-line"></i>
+        </div>
+        <h3 class="text-2xl font-bold mb-4">Skill Profile</h3>
+        <p class="text-slate-700 leading-relaxed mb-4">
+          Showcase your technical and soft skills through real activity.
+          Your UniSpace profile evolves as you study, work, and collaborate.
+        </p>
+        <ul class="text-slate-600 text-sm space-y-2">
+          <li><i class="fas fa-check-circle text-green-500 mr-2"></i> Skill assessment tools</li>
+          <li><i class="fas fa-check-circle text-green-500 mr-2"></i> Progress tracking</li>
+          <li><i class="fas fa-check-circle text-green-500 mr-2"></i> Verified achievement badges</li>
+        </ul>
+      </div>
+
+      <div class="card animate">
+        <div class="feature-icon">
+          <i class="fas fa-shield-alt"></i>
+        </div>
+        <h3 class="text-2xl font-bold mb-4">Trust Network</h3>
+        <p class="text-slate-700 leading-relaxed mb-4">
+          Every user is verified through their institution.
+          This creates a safe, closed-loop environment built on trust and accountability.
+        </p>
+        <ul class="text-slate-600 text-sm space-y-2">
+          <li><i class="fas fa-check-circle text-green-500 mr-2"></i> University email verification</li>
+          <li><i class="fas fa-check-circle text-green-500 mr-2"></i> Two-factor authentication</li>
+          <li><i class="fas fa-check-circle text-green-500 mr-2"></i> Encrypted communications</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- UNIVERSITIES SECTION -->
+  <section id="universities" class="py-20 px-10 bg-gradient-to-b from-white to-indigo-50 animate">
+    <div class="text-center mb-16">
+      <h2 class="text-5xl font-bold mb-6">Trusted by Leading Institutions</h2>
+      <p class="text-xl text-slate-600 max-w-3xl mx-auto">
+        Universities across the globe are partnering with UniSpace to enhance their student experience.
+      </p>
+    </div>
+    
+    <div class="flex flex-wrap justify-center gap-3 mb-16">
+      <span class="university-badge">Stanford University</span>
+      <span class="university-badge">MIT</span>
+      <span class="university-badge">University of Toronto</span>
+      <span class="university-badge">Imperial College London</span>
+      <span class="university-badge">University of Melbourne</span>
+      <span class="university-badge">ETH Zurich</span>
+      <span class="university-badge">National University of Singapore</span>
+      <span class="university-badge">University of Cape Town</span>
+      <span class="university-badge">University of Tokyo</span>
+      <span class="university-badge">University of Cambridge</span>
+      <span class="university-badge">Harvard University</span>
+      <span class="university-badge">University of Oxford</span>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+      <div class="testimonial-card animate">
+        <div class="flex items-center mb-4">
+          <div class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-bold mr-4 shadow">S</div>
+          <div>
+            <div class="font-bold">Sarah Chen</div>
+            <div class="text-sm text-slate-500">Computer Science, MIT</div>
+          </div>
+        </div>
+        <p class="text-slate-700 italic">"UniSpace saved me over $800 on textbooks in my first year alone. The campus marketplace is a game-changer for student budgets."</p>
+      </div>
+      
+      <div class="testimonial-card animate">
+        <div class="flex items-center mb-4">
+          <div class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-bold mr-4 shadow">M</div>
+          <div>
+            <div class="font-bold">Marcus Johnson</div>
+            <div class="text-sm text-slate-500">Business, University of Toronto</div>
+          </div>
+        </div>
+        <p class="text-slate-700 italic">"I landed my first internship through UniSpace's career tracker. The structured approach helped me stay organized during application season."</p>
+      </div>
+      
+      <div class="testimonial-card animate">
+        <div class="flex items-center mb-4">
+          <div class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-bold mr-4 shadow">P</div>
+          <div>
+            <div class="font-bold">Professor Alvarez</div>
+            <div class="text-sm text-slate-500">Faculty Advisor, Stanford</div>
+          </div>
+        </div>
+        <p class="text-slate-700 italic">"UniSpace has significantly reduced academic dishonesty while promoting legitimate collaboration. It's transformed how our students share knowledge."</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="py-28 px-10 bg-gradient-to-br from-white to-white animate">
+    <div class="max-w-4xl mx-auto">
+      <div class="text-center mb-16">
+        <h2 class="text-5xl font-bold mb-6">Why UniSpace Exists</h2>
+        <p class="text-xl text-slate-700 leading-relaxed mb-8">
+          Student life today is fragmented across dozens of platforms that were never
+          designed to work together. UniSpace was created to unify academic, social,
+          and professional experiences into one intentional system.
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+        <div class="animate">
+          <h3 class="text-2xl font-bold mb-6 text-indigo-600">Our Mission</h3>
+          <p class="text-slate-700 leading-relaxed mb-4">
+            To empower students with tools that reduce financial burden, enhance academic performance, and accelerate career readiness—all within a trusted, verified community.
+          </p>
+          <p class="text-slate-700 leading-relaxed">
+            We believe that when students have the right resources and connections, they don't just survive university—they thrive.
+          </p>
+        </div>
+        
+        <div class="animate">
+          <h3 class="text-2xl font-bold mb-6 text-indigo-600">Our Vision</h3>
+          <p class="text-slate-700 leading-relaxed mb-4">
+            To become the definitive digital campus for every university student worldwide, creating ecosystems where knowledge, resources, and opportunities flow freely and securely.
+          </p>
+          <p class="text-slate-700 leading-relaxed">
+            By 2030, we aim to serve 5 million students across 500 institutions, fundamentally changing how higher education communities interact.
+          </p>
+        </div>
+      </div>
+      
+      <div class="mt-16 p-8 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-3xl text-center animate border border-indigo-100">
+        <h3 class="text-2xl font-bold mb-4">Ready to Join Your Campus Network?</h3>
+        <p class="text-slate-700 mb-6">Access is free for all verified university students. Simply log in with your university credentials.</p>
+        <div class="flex gap-4 justify-center flex-wrap">
+          <button class="btn-primary shadow-lg" onclick="login()">
+            <i class="fas fa-sign-in-alt mr-2"></i> Student Login
+          </button>
+          <button class="btn-secondary" onclick="scrollToSection('universities')">
+            <i class="fas fa-list mr-2"></i> See Partner Universities
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="py-16 px-10 bg-gradient-to-r from-slate-900 to-slate-800 text-white">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+      <div>
+        <div class="flex items-center gap-3 font-bold text-2xl mb-6">
+          <div class="w-10 h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl flex items-center justify-center text-white shadow-lg">U</div>
+          UniSpace
+        </div>
+        <p class="text-slate-300">The definitive platform for modern campus life.</p>
+        <div class="flex gap-4 mt-6">
+          <i class="fab fa-twitter hover:text-indigo-300 cursor-pointer transition"></i>
+          <i class="fab fa-linkedin hover:text-indigo-300 cursor-pointer transition"></i>
+          <i class="fab fa-instagram hover:text-indigo-300 cursor-pointer transition"></i>
+          <i class="fab fa-youtube hover:text-indigo-300 cursor-pointer transition"></i>
+        </div>
+      </div>
+      
+      <div>
+        <h4 class="font-bold text-lg mb-6">Platform</h4>
+        <ul class="space-y-3 text-slate-300">
+          <li><a href="#" class="hover:text-white transition">Features</a></li>
+          <li><a href="#" class="hover:text-white transition">Student Services</a></li>
+          <li><a href="#" class="hover:text-white transition">Security</a></li>
+          <li><a href="#" class="hover:text-white transition">Mobile App</a></li>
+        </ul>
+      </div>
+      
+      <div>
+        <h4 class="font-bold text-lg mb-6">For Universities</h4>
+        <ul class="space-y-3 text-slate-300">
+          <li><a href="#" class="hover:text-white transition">Partner With Us</a></li>
+          <li><a href="#" class="hover:text-white transition">Administration Tools</a></li>
+          <li><a href="#" class="hover:text-white transition">Integration Guide</a></li>
+          <li><a href="#" class="hover:text-white transition">Research & Impact</a></li>
+        </ul>
+      </div>
+      
+      <div>
+        <h4 class="font-bold text-lg mb-6">Connect</h4>
+        <ul class="space-y-3 text-slate-300">
+          <li><a href="#" class="hover:text-white transition">Contact Support</a></li>
+          <li><a href="#" class="hover:text-white transition">Blog & Insights</a></li>
+          <li><a href="#" class="hover:text-white transition">Careers</a></li>
+          <li><a href="#" class="hover:text-white transition">Press & Media</a></li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="pt-8 border-t border-slate-700 text-center text-sm text-slate-400">
+      © 2025 UniSpace Technologies Inc. • Built for students, trusted by institutions worldwide.
+      <div class="mt-4 text-xs">
+        <a href="#" class="hover:text-white transition mx-3">Privacy Policy</a> | 
+        <a href="#" class="hover:text-white transition mx-3">Terms of Service</a> | 
+        <a href="#" class="hover:text-white transition mx-3">Cookie Policy</a> |
+        <a href="#" class="hover:text-white transition mx-3">Accessibility</a>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+// FIXED: Improved scroll function with active nav highlighting
+function scrollToSection(id) {
+  const element = document.getElementById(id);
+  if (element) {
+    // Calculate offset for sticky navbar
+    const navbarHeight = document.querySelector('.navbar').offsetHeight;
+    const elementPosition = element.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.pageYOffset - navbarHeight;
+    
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: "smooth"
+    });
+    
+    // Update active nav link
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.classList.remove('active');
+      if (link.dataset.section === id) {
+        link.classList.add('active');
+      }
+    });
+  }
+}
+
+// Update active nav link on scroll
+window.addEventListener('scroll', () => {
+  const sections = ['home', 'stats', 'features', 'universities', 'about'];
+  const navbarHeight = document.querySelector('.navbar').offsetHeight;
+  
+  let currentSection = '';
+  
+  sections.forEach(section => {
+    const element = document.getElementById(section);
+    if (element) {
+      const rect = element.getBoundingClientRect();
+      if (rect.top <= navbarHeight + 100 && rect.bottom >= navbarHeight + 100) {
+        currentSection = section;
+      }
+    }
+  });
+  
+  document.querySelectorAll('.nav-link').forEach(link => {
+    link.classList.remove('active');
+    if (link.dataset.section === currentSection) {
+      link.classList.add('active');
+    }
+  });
+});
+
+function login() {
+  alert("Welcome to UniSpace! 🎓\n\nAs a verified university student, you can access UniSpace for free using your university credentials.\n\nDemo Login:\nEmail: studentID@youruniversity.edu\nPassword: Use your university single sign-on\n\nFeatures available immediately:\n• Campus Marketplace\n• Study Pool resources\n• Career Tracker\n• Student Services directory\n• Skill Profile builder");
+}
+
+/* Scroll animations */
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) entry.target.classList.add("show");
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll(".animate").forEach(el => observer.observe(el));
+
+// Stats counter animation (demo)
+const statElements = document.querySelectorAll('.stat-card .text-4xl');
+if (statElements.length) {
+  statElements.forEach(el => {
+    const finalValue = el.textContent;
+    el.textContent = '0%';
+    
+    const observer = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) {
+        let current = 0;
+        const increment = parseInt(finalValue) / 30;
+        const timer = setInterval(() => {
+          current += increment;
+          if (current >= parseInt(finalValue)) {
+            current = parseInt(finalValue);
+            clearInterval(timer);
+          }
+          el.textContent = Math.round(current) + '%';
+        }, 50);
+        observer.unobserve(el);
+      }
+    }, { threshold: 0.5 });
+    
+    observer.observe(el);
+  });
+}
+
+// Set home as active on page load
+window.addEventListener('DOMContentLoaded', () => {
+  document.querySelector('[data-section="home"]').classList.add('active');
+});
+</script>
+
+</body>
+</html>
