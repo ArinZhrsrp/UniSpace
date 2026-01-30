@@ -1,0 +1,1582 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notifications - UniSpace</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #5a67d8;
+        --primary-light: #c3dafe;
+        --primary-dark: #434190;
+        --secondary: #f7fafc;
+        --accent-green: #48bb78;
+        --accent-orange: #ed8936;
+        --accent-red: #f56565;
+        --accent-purple: #9f7aea;
+        --accent-blue: #4299e1;
+        --accent-yellow: #ecc94b;
+        --text-dark: #2d3748;
+        --text-light: #718096;
+        --border: #e2e8f0;
+        --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        --card-radius: 20px;
+        --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background: linear-gradient(135deg, #f5f7ff 0%, #f0f4ff 100%);
+        color: var(--text-dark);
+        line-height: 1.6;
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      /* Header */
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        padding: 20px;
+        background: white;
+        border-radius: var(--card-radius);
+        box-shadow: var(--card-shadow);
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .logo-icon {
+        width: 42px;
+        height: 42px;
+        background: linear-gradient(
+          135deg,
+          var(--primary) 0%,
+          var(--primary-dark) 100%
+        );
+        color: white;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 20px;
+      }
+
+      .logo-text {
+        font-family: "Poppins", sans-serif;
+        font-weight: 800;
+        font-size: 24px;
+        background: linear-gradient(
+          to right,
+          var(--primary),
+          var(--primary-dark)
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .back-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        background: var(--secondary);
+        border: none;
+        border-radius: 12px;
+        color: var(--text-dark);
+        font-family: "Inter", sans-serif;
+        font-weight: 500;
+        font-size: 15px;
+        cursor: pointer;
+        transition: var(--transition);
+      }
+
+      .back-btn:hover {
+        background: var(--primary-light);
+        color: var(--primary);
+      }
+
+      .notification-badge {
+        position: relative;
+        background: var(--secondary);
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        color: var(--text-light);
+        transition: var(--transition);
+        cursor: pointer;
+      }
+
+      .notification-badge:hover {
+        background: var(--primary-light);
+        color: var(--primary);
+      }
+
+      .notification-badge .count {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background: var(--accent-red);
+        color: white;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+      }
+
+      /* Main Content */
+      .main-content {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 30px;
+      }
+
+      @media (min-width: 992px) {
+        .main-content {
+          grid-template-columns: 1fr 350px;
+        }
+      }
+
+      /* Notifications Section */
+      .notifications-section {
+        background: white;
+        border-radius: var(--card-radius);
+        padding: 30px;
+        box-shadow: var(--card-shadow);
+      }
+
+      .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+      }
+
+      .section-title {
+        font-family: "Poppins", sans-serif;
+        font-weight: 600;
+        font-size: 24px;
+        color: var(--text-dark);
+      }
+
+      .notification-actions {
+        display: flex;
+        gap: 10px;
+      }
+
+      .action-btn {
+        padding: 8px 16px;
+        background: var(--secondary);
+        border: none;
+        border-radius: 8px;
+        color: var(--text-light);
+        font-family: "Inter", sans-serif;
+        font-weight: 500;
+        font-size: 14px;
+        cursor: pointer;
+        transition: var(--transition);
+      }
+
+      .action-btn:hover {
+        background: var(--primary-light);
+        color: var(--primary);
+      }
+
+      .action-btn.active {
+        background: var(--primary);
+        color: white;
+      }
+
+      /* Notification Filters */
+      .notification-filters {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        overflow-x: auto;
+        padding-bottom: 10px;
+      }
+
+      .filter-btn {
+        padding: 8px 16px;
+        background: var(--secondary);
+        border: none;
+        border-radius: 20px;
+        color: var(--text-light);
+        font-family: "Inter", sans-serif;
+        font-weight: 500;
+        font-size: 14px;
+        cursor: pointer;
+        transition: var(--transition);
+        white-space: nowrap;
+      }
+
+      .filter-btn:hover {
+        background: var(--primary-light);
+        color: var(--primary);
+      }
+
+      .filter-btn.active {
+        background: var(--primary);
+        color: white;
+      }
+
+      /* Notification List */
+      .notification-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .notification-item {
+        display: flex;
+        align-items: flex-start;
+        padding: 20px;
+        background: white;
+        border-radius: var(--card-radius);
+        border: 2px solid var(--border);
+        transition: var(--transition);
+        cursor: pointer;
+        position: relative;
+      }
+
+      .notification-item:hover {
+        border-color: var(--primary-light);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      }
+
+      .notification-item.unread {
+        background: rgba(90, 103, 216, 0.03);
+        border-color: var(--primary);
+      }
+
+      .notification-item.unread::before {
+        content: "";
+        position: absolute;
+        left: -2px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 6px;
+        height: 6px;
+        background: var(--primary);
+        border-radius: 50%;
+      }
+
+      .notification-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        margin-right: 16px;
+        flex-shrink: 0;
+      }
+
+      .notification-icon.marketplace {
+        background: rgba(90, 103, 216, 0.1);
+        color: var(--primary);
+      }
+
+      .notification-icon.notes {
+        background: rgba(72, 187, 120, 0.1);
+        color: var(--accent-green);
+      }
+
+      .notification-icon.internship {
+        background: rgba(66, 153, 225, 0.1);
+        color: var(--accent-blue);
+      }
+
+      .notification-icon.services {
+        background: rgba(237, 137, 54, 0.1);
+        color: var(--accent-orange);
+      }
+
+      .notification-icon.skills {
+        background: rgba(159, 122, 234, 0.1);
+        color: var(--accent-purple);
+      }
+
+      .notification-icon.system {
+        background: rgba(113, 128, 150, 0.1);
+        color: var(--text-light);
+      }
+
+      .notification-content {
+        flex: 1;
+      }
+
+      .notification-title {
+        font-weight: 600;
+        font-size: 16px;
+        margin-bottom: 5px;
+        color: var(--text-dark);
+      }
+
+      .notification-message {
+        font-size: 14px;
+        color: var(--text-light);
+        margin-bottom: 8px;
+        line-height: 1.5;
+      }
+
+      .notification-meta {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        font-size: 12px;
+        color: var(--text-light);
+      }
+
+      .notification-time {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .notification-category {
+        padding: 3px 10px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 500;
+        text-transform: uppercase;
+      }
+
+      .category-marketplace {
+        background: rgba(90, 103, 216, 0.1);
+        color: var(--primary);
+      }
+
+      .category-notes {
+        background: rgba(72, 187, 120, 0.1);
+        color: var(--accent-green);
+      }
+
+      .category-internship {
+        background: rgba(66, 153, 225, 0.1);
+        color: var(--accent-blue);
+      }
+
+      .category-services {
+        background: rgba(237, 137, 54, 0.1);
+        color: var(--accent-orange);
+      }
+
+      .category-skills {
+        background: rgba(159, 122, 234, 0.1);
+        color: var(--accent-purple);
+      }
+
+      .notification-actions-small {
+        display: flex;
+        gap: 10px;
+        margin-left: 10px;
+      }
+
+      .action-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--secondary);
+        color: var(--text-light);
+        cursor: pointer;
+        transition: var(--transition);
+        border: none;
+      }
+
+      .action-icon:hover {
+        background: var(--primary-light);
+        color: var(--primary);
+      }
+
+      .action-icon.delete:hover {
+        background: rgba(245, 101, 101, 0.1);
+        color: var(--accent-red);
+      }
+
+      /* No Notifications */
+      .no-notifications {
+        text-align: center;
+        padding: 60px 20px;
+        color: var(--text-light);
+      }
+
+      .no-notifications-icon {
+        font-size: 64px;
+        color: var(--border);
+        margin-bottom: 20px;
+      }
+
+      .no-notifications h3 {
+        font-family: "Poppins", sans-serif;
+        font-size: 20px;
+        margin-bottom: 10px;
+        color: var(--text-dark);
+      }
+
+      /* Sidebar */
+      .sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      /* Notification Stats */
+      .stats-card {
+        background: white;
+        border-radius: var(--card-radius);
+        padding: 25px;
+        box-shadow: var(--card-shadow);
+      }
+
+      .stats-title {
+        font-family: "Poppins", sans-serif;
+        font-weight: 600;
+        font-size: 18px;
+        margin-bottom: 20px;
+        color: var(--text-dark);
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+      }
+
+      .stat-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 15px;
+        border-radius: 12px;
+        background: var(--secondary);
+        text-align: center;
+      }
+
+      .stat-number {
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 5px;
+      }
+
+      .stat-label {
+        font-size: 12px;
+        color: var(--text-light);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .stat-item.unread .stat-number {
+        color: var(--primary);
+      }
+
+      .stat-item.marketplace .stat-number {
+        color: var(--primary);
+      }
+
+      .stat-item.notes .stat-number {
+        color: var(--accent-green);
+      }
+
+      .stat-item.internship .stat-number {
+        color: var(--accent-blue);
+      }
+
+      /* Settings Card */
+      .settings-card {
+        background: white;
+        border-radius: var(--card-radius);
+        padding: 25px;
+        box-shadow: var(--card-shadow);
+      }
+
+      .settings-title {
+        font-family: "Poppins", sans-serif;
+        font-weight: 600;
+        font-size: 18px;
+        margin-bottom: 20px;
+        color: var(--text-dark);
+      }
+
+      .settings-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .setting-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+        background: var(--secondary);
+        border-radius: 12px;
+      }
+
+      .setting-info h4 {
+        font-weight: 500;
+        font-size: 14px;
+        margin-bottom: 3px;
+        color: var(--text-dark);
+      }
+
+      .setting-info p {
+        font-size: 12px;
+        color: var(--text-light);
+      }
+
+      /* Toggle Switch */
+      .toggle-switch {
+        position: relative;
+        width: 50px;
+        height: 26px;
+      }
+
+      .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      .toggle-slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: 0.4s;
+        border-radius: 34px;
+      }
+
+      .toggle-slider:before {
+        position: absolute;
+        content: "";
+        height: 18px;
+        width: 18px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: 0.4s;
+        border-radius: 50%;
+      }
+
+      input:checked + .toggle-slider {
+        background-color: var(--primary);
+      }
+
+      input:checked + .toggle-slider:before {
+        transform: translateX(24px);
+      }
+
+      /* Quick Actions */
+      .quick-actions-card {
+        background: white;
+        border-radius: var(--card-radius);
+        padding: 25px;
+        box-shadow: var(--card-shadow);
+      }
+
+      .quick-actions-title {
+        font-family: "Poppins", sans-serif;
+        font-weight: 600;
+        font-size: 18px;
+        margin-bottom: 20px;
+        color: var(--text-dark);
+      }
+
+      .quick-actions-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+      }
+
+      .quick-action-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 15px 10px;
+        background: var(--secondary);
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: var(--transition);
+      }
+
+      .quick-action-btn:hover {
+        background: var(--primary);
+        color: white;
+        transform: translateY(-3px);
+      }
+
+      .quick-action-btn:hover .quick-action-icon {
+        color: white;
+      }
+
+      .quick-action-icon {
+        font-size: 20px;
+        margin-bottom: 8px;
+        color: var(--primary);
+      }
+
+      .quick-action-text {
+        font-size: 12px;
+        font-weight: 500;
+        text-align: center;
+      }
+
+      /* Mobile Responsive */
+      @media (max-width: 768px) {
+        .header {
+          flex-direction: column;
+          gap: 15px;
+          align-items: flex-start;
+        }
+
+        .header-actions {
+          width: 100%;
+          justify-content: space-between;
+        }
+
+        .notifications-section,
+        .stats-card,
+        .settings-card,
+        .quick-actions-card {
+          padding: 20px;
+        }
+
+        .notification-item {
+          padding: 15px;
+        }
+
+        .notification-icon {
+          width: 40px;
+          height: 40px;
+          font-size: 18px;
+        }
+
+        .notification-actions-small {
+          flex-direction: column;
+          gap: 5px;
+        }
+
+        .action-icon {
+          width: 28px;
+          height: 28px;
+        }
+
+        .stats-grid,
+        .quick-actions-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (max-width: 480px) {
+        .section-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 15px;
+        }
+
+        .notification-actions {
+          width: 100%;
+          justify-content: space-between;
+        }
+
+        .action-btn {
+          flex: 1;
+          text-align: center;
+        }
+
+        .notification-filters {
+          flex-wrap: wrap;
+        }
+      }
+
+      /* Animation for new notifications */
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      .notification-badge.pulse {
+        animation: pulse 0.5s ease-in-out;
+      }
+
+      /* Loading state */
+      .loading {
+        opacity: 0.6;
+        pointer-events: none;
+      }
+
+      /* Toast notification */
+      .toast {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        background: var(--text-dark);
+        color: white;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+        transform: translateY(100px);
+        opacity: 0;
+        transition:
+          transform 0.3s ease,
+          opacity 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .toast.show {
+        transform: translateY(0);
+        opacity: 1;
+      }
+
+      .toast.success {
+        background: var(--accent-green);
+      }
+
+      .toast.error {
+        background: var(--accent-red);
+      }
+
+      .toast.info {
+        background: var(--primary);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Header -->
+      <header class="header">
+        <div class="logo">
+          <div class="logo-icon">U</div>
+          <div class="logo-text">UniSpace</div>
+        </div>
+        <div class="header-actions">
+          <button
+            class="back-btn"
+            onclick="window.location.href = '../dashboard/dashboard.html'"
+          >
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+          </button>
+          <div class="notification-badge" id="notificationBadge">
+            <i class="far fa-bell"></i>
+            <span class="count" id="notificationCount">3</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <!-- Notifications Section -->
+        <div class="notifications-section">
+          <div class="section-header">
+            <h2 class="section-title">Notifications</h2>
+            <div class="notification-actions">
+              <button
+                class="action-btn active"
+                onclick="filterNotifications('all')"
+              >
+                All
+              </button>
+              <button
+                class="action-btn"
+                onclick="filterNotifications('unread')"
+              >
+                Unread
+              </button>
+              <button class="action-btn" onclick="markAllAsRead()">
+                <i class="fas fa-check-double"></i> Mark all as read
+              </button>
+            </div>
+          </div>
+
+          <!-- Notification Filters -->
+          <div class="notification-filters">
+            <button class="filter-btn active" onclick="filterByCategory('all')">
+              All Categories
+            </button>
+            <button
+              class="filter-btn"
+              onclick="filterByCategory('marketplace')"
+            >
+              Marketplace
+            </button>
+            <button class="filter-btn" onclick="filterByCategory('notes')">
+              Notes
+            </button>
+            <button class="filter-btn" onclick="filterByCategory('internship')">
+              Internship
+            </button>
+            <button class="filter-btn" onclick="filterByCategory('services')">
+              Services
+            </button>
+            <button class="filter-btn" onclick="filterByCategory('skills')">
+              Skills
+            </button>
+          </div>
+
+          <!-- Notification List -->
+          <div class="notification-list" id="notificationList">
+            <!-- Notifications will be loaded here dynamically -->
+          </div>
+
+          <!-- No Notifications State -->
+          <div
+            class="no-notifications"
+            id="noNotifications"
+            style="display: none"
+          >
+            <div class="no-notifications-icon">
+              <i class="far fa-bell-slash"></i>
+            </div>
+            <h3>No notifications yet</h3>
+            <p>When you get notifications, they'll appear here</p>
+          </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+          <!-- Notification Stats -->
+          <div class="stats-card">
+            <h3 class="stats-title">Notification Stats</h3>
+            <div class="stats-grid">
+              <div class="stat-item unread">
+                <div class="stat-number" id="unreadCount">3</div>
+                <div class="stat-label">Unread</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-number" id="totalCount">12</div>
+                <div class="stat-label">Total</div>
+              </div>
+              <div class="stat-item marketplace">
+                <div class="stat-number" id="marketplaceCount">5</div>
+                <div class="stat-label">Marketplace</div>
+              </div>
+              <div class="stat-item notes">
+                <div class="stat-number" id="notesCount">4</div>
+                <div class="stat-label">Notes</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Settings -->
+          <div class="settings-card">
+            <h3 class="settings-title">Notification Settings</h3>
+            <div class="settings-list">
+              <div class="setting-item">
+                <div class="setting-info">
+                  <h4>Push Notifications</h4>
+                  <p>Receive notifications in real-time</p>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="pushNotifications" checked />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <div class="setting-item">
+                <div class="setting-info">
+                  <h4>Email Notifications</h4>
+                  <p>Get notifications via email</p>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="emailNotifications" checked />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <div class="setting-item">
+                <div class="setting-info">
+                  <h4>Sound Alerts</h4>
+                  <p>Play sound for new notifications</p>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="soundAlerts" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="quick-actions-card">
+            <h3 class="quick-actions-title">Quick Actions</h3>
+            <div class="quick-actions-grid">
+              <button
+                class="quick-action-btn"
+                onclick="clearAllNotifications()"
+              >
+                <div class="quick-action-icon">
+                  <i class="fas fa-trash-alt"></i>
+                </div>
+                <div class="quick-action-text">Clear All</div>
+              </button>
+              <button class="quick-action-btn" onclick="refreshNotifications()">
+                <div class="quick-action-icon">
+                  <i class="fas fa-sync-alt"></i>
+                </div>
+                <div class="quick-action-text">Refresh</div>
+              </button>
+              <button class="quick-action-btn" onclick="testNotification()">
+                <div class="quick-action-icon"><i class="fas fa-bell"></i></div>
+                <div class="quick-action-text">Test</div>
+              </button>
+              <button class="quick-action-btn" onclick="openSettings()">
+                <div class="quick-action-icon"><i class="fas fa-cog"></i></div>
+                <div class="quick-action-text">Settings</div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+      // Sample notifications data
+      const notificationsData = [
+        {
+          id: 1,
+          title: "Item Sold!",
+          message:
+            "Your 'Calculus Textbook' has been purchased by Alex Chen for $35.",
+          category: "marketplace",
+          time: "2 hours ago",
+          icon: "fa-shopping-cart",
+          unread: true,
+          action: "view_item",
+        },
+        {
+          id: 2,
+          title: "New Note Rating",
+          message: "Sarah Johnson gave your 'Data Structures Notes' 5 stars!",
+          category: "notes",
+          time: "5 hours ago",
+          icon: "fa-star",
+          unread: true,
+          action: "view_rating",
+        },
+        {
+          id: 3,
+          title: "Internship Update",
+          message:
+            "Your internship application at TechCorp has been reviewed. Check your status.",
+          category: "internship",
+          time: "1 day ago",
+          icon: "fa-briefcase",
+          unread: true,
+          action: "view_internship",
+        },
+        {
+          id: 4,
+          title: "Service Booking",
+          message:
+            "John Smith booked your 'Python Tutoring' service for tomorrow at 3 PM.",
+          category: "services",
+          time: "2 days ago",
+          icon: "fa-calendar-check",
+          unread: false,
+          action: "view_booking",
+        },
+        {
+          id: 5,
+          title: "Skill Level Up!",
+          message:
+            "Congratulations! Your 'React.js' skill has leveled up to Intermediate.",
+          category: "skills",
+          time: "3 days ago",
+          icon: "fa-chart-line",
+          unread: false,
+          action: "view_skills",
+        },
+        {
+          id: 6,
+          title: "Welcome to UniSpace!",
+          message:
+            "Get started by exploring all features. Complete your profile to unlock more.",
+          category: "system",
+          time: "1 week ago",
+          icon: "fa-rocket",
+          unread: false,
+          action: "get_started",
+        },
+        {
+          id: 7,
+          title: "Item Price Suggestion",
+          message:
+            "Someone suggested $40 for your 'Physics Lab Kit'. Would you like to accept?",
+          category: "marketplace",
+          time: "4 hours ago",
+          icon: "fa-tag",
+          unread: false,
+          action: "view_offer",
+        },
+        {
+          id: 8,
+          title: "Notes Downloaded",
+          message:
+            "Your 'Algorithms Notes' have been downloaded 15 times this week!",
+          category: "notes",
+          time: "1 day ago",
+          icon: "fa-download",
+          unread: false,
+          action: "view_stats",
+        },
+      ];
+
+      // Initialize notifications
+      let notifications =
+        JSON.parse(localStorage.getItem("unispace_notifications")) ||
+        notificationsData;
+      let currentFilter = "all";
+      let currentCategory = "all";
+
+      // DOM Elements
+      const notificationList = document.getElementById("notificationList");
+      const noNotifications = document.getElementById("noNotifications");
+      const notificationCount = document.getElementById("notificationCount");
+      const unreadCount = document.getElementById("unreadCount");
+      const totalCount = document.getElementById("totalCount");
+      const marketplaceCount = document.getElementById("marketplaceCount");
+      const notesCount = document.getElementById("notesCount");
+      const notificationBadge = document.getElementById("notificationBadge");
+      const toast = document.getElementById("toast");
+
+      // Initialize
+      document.addEventListener("DOMContentLoaded", function () {
+        saveNotifications();
+        updateStats();
+        renderNotifications();
+        setupEventListeners();
+      });
+
+      // Save notifications to localStorage
+      function saveNotifications() {
+        localStorage.setItem(
+          "unispace_notifications",
+          JSON.stringify(notifications),
+        );
+      }
+
+      // Update statistics
+      function updateStats() {
+        const total = notifications.length;
+        const unread = notifications.filter((n) => n.unread).length;
+        const marketplace = notifications.filter(
+          (n) => n.category === "marketplace",
+        ).length;
+        const notes = notifications.filter(
+          (n) => n.category === "notes",
+        ).length;
+
+        notificationCount.textContent = unread;
+        unreadCount.textContent = unread;
+        totalCount.textContent = total;
+        marketplaceCount.textContent = marketplace;
+        notesCount.textContent = notes;
+
+        // Update badge animation
+        if (unread > 0) {
+          notificationBadge.classList.add("pulse");
+          setTimeout(() => notificationBadge.classList.remove("pulse"), 500);
+        }
+      }
+
+      // Render notifications
+      function renderNotifications() {
+        notificationList.innerHTML = "";
+
+        let filteredNotifications = notifications;
+
+        // Apply filters
+        if (currentFilter === "unread") {
+          filteredNotifications = filteredNotifications.filter((n) => n.unread);
+        }
+
+        if (currentCategory !== "all") {
+          filteredNotifications = filteredNotifications.filter(
+            (n) => n.category === currentCategory,
+          );
+        }
+
+        // Show/hide no notifications message
+        if (filteredNotifications.length === 0) {
+          noNotifications.style.display = "block";
+          notificationList.style.display = "none";
+        } else {
+          noNotifications.style.display = "none";
+          notificationList.style.display = "flex";
+
+          // Sort by unread first, then by time (newest first)
+          filteredNotifications.sort((a, b) => {
+            if (a.unread !== b.unread) return b.unread - a.unread;
+            return b.id - a.id; // Simple time-based sorting
+          });
+
+          // Render each notification
+          filteredNotifications.forEach((notification) => {
+            const notificationItem = createNotificationElement(notification);
+            notificationList.appendChild(notificationItem);
+          });
+        }
+
+        updateStats();
+      }
+
+      // Create notification element
+      function createNotificationElement(notification) {
+        const div = document.createElement("div");
+        div.className = `notification-item ${notification.unread ? "unread" : ""}`;
+        div.dataset.id = notification.id;
+
+        const iconClass = getIconClass(notification.category);
+        const categoryClass = getCategoryClass(notification.category);
+
+        div.innerHTML = `
+                <div class="notification-icon ${iconClass}">
+                    <i class="fas ${notification.icon}"></i>
+                </div>
+                <div class="notification-content">
+                    <div class="notification-title">${notification.title}</div>
+                    <div class="notification-message">${notification.message}</div>
+                    <div class="notification-meta">
+                        <div class="notification-time">
+                            <i class="far fa-clock"></i> ${notification.time}
+                        </div>
+                        <div class="notification-category ${categoryClass}">
+                            ${notification.category}
+                        </div>
+                    </div>
+                </div>
+                <div class="notification-actions-small">
+                    <button class="action-icon ${notification.unread ? "mark-read" : "mark-unread"}" 
+                            onclick="toggleRead(${notification.id})">
+                        <i class="fas ${notification.unread ? "fa-envelope-open" : "fa-envelope"}"></i>
+                    </button>
+                    <button class="action-icon delete" onclick="deleteNotification(${notification.id})">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </div>
+            `;
+
+        // Add click handler for the entire notification
+        div.addEventListener("click", (e) => {
+          if (!e.target.closest(".notification-actions-small")) {
+            handleNotificationClick(notification);
+          }
+        });
+
+        return div;
+      }
+
+      // Get icon class based on category
+      function getIconClass(category) {
+        const classes = {
+          marketplace: "marketplace",
+          notes: "notes",
+          internship: "internship",
+          services: "services",
+          skills: "skills",
+          system: "system",
+        };
+        return classes[category] || "system";
+      }
+
+      // Get category class for styling
+      function getCategoryClass(category) {
+        return `category-${category}`;
+      }
+
+      // Filter notifications
+      function filterNotifications(filter) {
+        currentFilter = filter;
+
+        // Update button states
+        document
+          .querySelectorAll(".notification-actions .action-btn")
+          .forEach((btn) => {
+            btn.classList.remove("active");
+          });
+        event.target.classList.add("active");
+
+        renderNotifications();
+      }
+
+      // Filter by category
+      function filterByCategory(category) {
+        currentCategory = category;
+
+        // Update button states
+        document.querySelectorAll(".filter-btn").forEach((btn) => {
+          btn.classList.remove("active");
+        });
+        event.target.classList.add("active");
+
+        renderNotifications();
+      }
+
+      // Toggle read/unread status
+      function toggleRead(id) {
+        const notification = notifications.find((n) => n.id === id);
+        if (notification) {
+          notification.unread = !notification.unread;
+          saveNotifications();
+          renderNotifications();
+          showToast(
+            notification.unread ? "Marked as unread" : "Marked as read",
+            "info",
+          );
+        }
+      }
+
+      // Delete notification
+      function deleteNotification(id) {
+        event.stopPropagation();
+
+        if (confirm("Are you sure you want to delete this notification?")) {
+          notifications = notifications.filter((n) => n.id !== id);
+          saveNotifications();
+          renderNotifications();
+          showToast("Notification deleted", "success");
+        }
+      }
+
+      // Mark all as read
+      function markAllAsRead() {
+        notifications.forEach((notification) => {
+          notification.unread = false;
+        });
+        saveNotifications();
+        renderNotifications();
+        showToast("All notifications marked as read", "success");
+      }
+
+      // Clear all notifications
+      function clearAllNotifications() {
+        if (confirm("Are you sure you want to clear all notifications?")) {
+          notifications = [];
+          saveNotifications();
+          renderNotifications();
+          showToast("All notifications cleared", "success");
+        }
+      }
+
+      // Refresh notifications
+      function refreshNotifications() {
+        // In a real app, this would fetch from server
+        showToast("Notifications refreshed", "info");
+        renderNotifications();
+      }
+
+      // Test notification
+      function testNotification() {
+        const testNotification = {
+          id: Date.now(),
+          title: "Test Notification",
+          message: "This is a test notification to show how they work.",
+          category: "system",
+          time: "Just now",
+          icon: "fa-bell",
+          unread: true,
+          action: "test",
+        };
+
+        notifications.unshift(testNotification);
+        saveNotifications();
+        renderNotifications();
+        showToast("Test notification created", "success");
+      }
+
+      // Handle notification click
+      function handleNotificationClick(notification) {
+        // Mark as read
+        notification.unread = false;
+        saveNotifications();
+        renderNotifications();
+
+        // Handle different actions
+        const actions = {
+          view_item: () => showToast("Opening item details...", "info"),
+          view_rating: () => showToast("Opening note ratings...", "info"),
+          view_internship: () =>
+            showToast("Opening internship details...", "info"),
+          view_booking: () => showToast("Opening service booking...", "info"),
+          view_skills: () => showToast("Opening skills profile...", "info"),
+          get_started: () =>
+            showToast("Opening getting started guide...", "info"),
+          view_offer: () => showToast("Opening price offer...", "info"),
+          view_stats: () => showToast("Opening notes statistics...", "info"),
+          test: () => showToast("Test notification clicked", "info"),
+        };
+
+        if (actions[notification.action]) {
+          actions[notification.action]();
+        }
+
+        // In a real app, you would navigate to the appropriate page
+        // window.location.href = `/${notification.action}.html`;
+      }
+
+      // Show toast notification
+      function showToast(message, type = "info") {
+        toast.textContent = message;
+        toast.className = `toast ${type} show`;
+
+        // Add icon
+        const icon =
+          type === "success"
+            ? "fa-check-circle"
+            : type === "error"
+              ? "fa-exclamation-circle"
+              : "fa-info-circle";
+        toast.innerHTML = `<i class="fas ${icon}"></i> ${message}`;
+
+        setTimeout(() => {
+          toast.classList.remove("show");
+        }, 3000);
+      }
+
+      // Open settings
+      function openSettings() {
+        showToast("Opening notification settings...", "info");
+        // In a real app, this would open a settings modal or page
+      }
+
+      // Setup event listeners
+      function setupEventListeners() {
+        // Toggle switches
+        document
+          .getElementById("pushNotifications")
+          .addEventListener("change", function (e) {
+            showToast(
+              `Push notifications ${e.target.checked ? "enabled" : "disabled"}`,
+              "info",
+            );
+          });
+
+        document
+          .getElementById("emailNotifications")
+          .addEventListener("change", function (e) {
+            showToast(
+              `Email notifications ${e.target.checked ? "enabled" : "disabled"}`,
+              "info",
+            );
+          });
+
+        document
+          .getElementById("soundAlerts")
+          .addEventListener("change", function (e) {
+            showToast(
+              `Sound alerts ${e.target.checked ? "enabled" : "disabled"}`,
+              "info",
+            );
+          });
+
+        // Simulate receiving new notification
+        setInterval(() => {
+          if (Math.random() > 0.8 && notifications.length < 15) {
+            // 20% chance
+            const categories = [
+              "marketplace",
+              "notes",
+              "internship",
+              "services",
+              "skills",
+            ];
+            const category =
+              categories[Math.floor(Math.random() * categories.length)];
+
+            const newNotification = {
+              id: Date.now(),
+              title: getRandomTitle(category),
+              message: getRandomMessage(category),
+              category: category,
+              time: "Just now",
+              icon: getRandomIcon(category),
+              unread: true,
+              action: "view_" + category,
+            };
+
+            notifications.unshift(newNotification);
+            saveNotifications();
+            renderNotifications();
+            showToast("New notification received!", "success");
+          }
+        }, 30000); // Check every 30 seconds
+      }
+
+      // Helper functions for demo notifications
+      function getRandomTitle(category) {
+        const titles = {
+          marketplace: [
+            "New Message",
+            "Price Update",
+            "Item Sold",
+            "New Offer",
+          ],
+          notes: [
+            "New Rating",
+            "Note Downloaded",
+            "Comment Added",
+            "Note Featured",
+          ],
+          internship: [
+            "Status Update",
+            "New Task",
+            "Feedback Received",
+            "Log Reminder",
+          ],
+          services: [
+            "Booking Request",
+            "Service Completed",
+            "New Review",
+            "Availability Change",
+          ],
+          skills: [
+            "Skill Updated",
+            "Level Achieved",
+            "New Badge",
+            "Progress Milestone",
+          ],
+        };
+        return titles[category]
+          ? titles[category][
+              Math.floor(Math.random() * titles[category].length)
+            ]
+          : "New Notification";
+      }
+
+      function getRandomMessage(category) {
+        const messages = {
+          marketplace: [
+            "Someone sent you a message about your listing.",
+            "Your item price has been automatically adjusted.",
+            "Congratulations! Your item has been sold.",
+            "You have received a new offer for your item.",
+          ],
+          notes: [
+            "A student rated your notes 5 stars!",
+            "Your notes have been downloaded 10+ times today.",
+            "Someone commented on your notes.",
+            "Your notes have been featured on the homepage.",
+          ],
+          internship: [
+            "Your internship application status has been updated.",
+            "You have a new task assigned for your internship.",
+            "Your supervisor left feedback on your latest log.",
+            "Don't forget to submit your weekly internship log.",
+          ],
+          services: [
+            "You have a new booking request for your service.",
+            "A service you booked has been marked as completed.",
+            "A client left a review for your service.",
+            "Your service availability has been updated.",
+          ],
+          skills: [
+            "Your skill level has been automatically updated.",
+            "Congratulations! You achieved a new skill level.",
+            "You earned a new badge for your progress.",
+            "You reached a new milestone in your skill development.",
+          ],
+        };
+        return messages[category]
+          ? messages[category][
+              Math.floor(Math.random() * messages[category].length)
+            ]
+          : "You have a new notification.";
+      }
+
+      function getRandomIcon(category) {
+        const icons = {
+          marketplace: [
+            "fa-shopping-cart",
+            "fa-tag",
+            "fa-dollar-sign",
+            "fa-gift",
+          ],
+          notes: ["fa-star", "fa-download", "fa-comment", "fa-award"],
+          internship: [
+            "fa-briefcase",
+            "fa-tasks",
+            "fa-comment-dots",
+            "fa-calendar-alt",
+          ],
+          services: [
+            "fa-calendar-check",
+            "fa-check-circle",
+            "fa-comment-alt",
+            "fa-clock",
+          ],
+          skills: [
+            "fa-chart-line",
+            "fa-trophy",
+            "fa-medal",
+            "fa-flag-checkered",
+          ],
+        };
+        return icons[category]
+          ? icons[category][Math.floor(Math.random() * icons[category].length)]
+          : "fa-bell";
+      }
+    </script>
+  </body>
+</html>
