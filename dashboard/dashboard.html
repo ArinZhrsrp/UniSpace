@@ -885,7 +885,12 @@
           </div>
 
           <div class="top-actions">
-            <div class="notification-btn">
+            <div
+              class="notification-btn"
+              onclick="
+                window.location.href = '../notifications/notifications.html'
+              "
+            >
               <i class="far fa-bell"></i>
               <span class="notification-badge">3</span>
             </div>
@@ -1270,38 +1275,43 @@
 
     <script>
       // Load sidebar content
+      // Load sidebar content
       function loadSidebar() {
+        console.log("Loading sidebar...");
         fetch("../sidebar/sidebar.html")
-          .then((response) => response.text())
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`Failed to load sidebar: ${response.status}`);
+            }
+            return response.text();
+          })
           .then((data) => {
+            console.log("Sidebar loaded successfully");
             document.getElementById("sidebar-container").innerHTML = data;
-            // Initialize sidebar after loading
-            initializeSidebar();
+
+            // Mark dashboard as active
+            setTimeout(() => {
+              const dashboardLink = document.querySelector(
+                'a[href*="dashboard.html"]',
+              );
+              if (dashboardLink) {
+                dashboardLink.classList.add("active");
+              }
+            }, 100);
           })
           .catch((error) => {
             console.error("Error loading sidebar:", error);
-            document.getElementById("sidebar-container").innerHTML =
-              "<p>Error loading sidebar</p>";
+            document.getElementById("sidebar-container").innerHTML = `
+        <div class="sidebar" style="padding: 20px; color: red;">
+          <h3>Sidebar Error</h3>
+          <p>${error.message}</p>
+          <p>Please check if sidebar.html exists in the sidebar folder.</p>
+        </div>
+      `;
           });
       }
 
-      // Initialize sidebar functions after loading
-      function initializeSidebar() {
-        // Functions from sidebar.html are available via window.sidebarFunctions
-        // but we need to set up event listeners
-        const navItems = document.querySelectorAll(".nav-item");
-        navItems.forEach((item) => {
-          item.addEventListener("click", function (e) {
-            e.preventDefault();
-            if (
-              window.sidebarFunctions &&
-              window.sidebarFunctions.setActiveNav
-            ) {
-              window.sidebarFunctions.setActiveNav(this);
-            }
-          });
-        });
-      }
+      // No separate initializeSidebar needed - sidebar handles its own initialization
 
       // Handle menu toggle for both desktop and mobile
       function handleMenuToggle() {

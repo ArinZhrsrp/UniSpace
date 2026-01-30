@@ -1,0 +1,1741 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Analytics - UniSpace</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      :root {
+        --primary: #5a67d8;
+        --primary-light: #c3dafe;
+        --primary-dark: #434190;
+        --secondary: #f7fafc;
+        --accent-green: #48bb78;
+        --accent-orange: #ed8936;
+        --accent-red: #f56565;
+        --accent-purple: #9f7aea;
+        --accent-blue: #4299e1;
+        --accent-yellow: #ecc94b;
+        --text-dark: #2d3748;
+        --text-light: #718096;
+        --border: #e2e8f0;
+        --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        --card-radius: 20px;
+        --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        --sidebar-width: 280px;
+        --sidebar-collapsed: 80px;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background: linear-gradient(135deg, #f5f7ff 0%, #f0f4ff 100%);
+        color: var(--text-dark);
+        line-height: 1.6;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      .dashboard-container {
+        display: grid;
+        grid-template-columns: var(--sidebar-width) 1fr;
+        min-height: 100vh;
+        transition: grid-template-columns 0.3s ease;
+      }
+
+      .dashboard-container.collapsed {
+        grid-template-columns: var(--sidebar-collapsed) 1fr;
+      }
+
+      /* Overlay for mobile */
+      .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 99;
+        display: none;
+      }
+
+      .overlay.active {
+        display: block;
+      }
+
+      /* Main Content */
+      .main-content {
+        padding: 30px;
+        overflow-y: auto;
+        transition: margin-left 0.3s ease;
+      }
+
+      /* Top Bar */
+      .top-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        background: white;
+        padding: 20px 25px;
+        border-radius: var(--card-radius);
+        box-shadow: var(--card-shadow);
+      }
+
+      .page-info {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .menu-toggle {
+        background: var(--secondary);
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        color: var(--primary);
+        transition: var(--transition);
+        cursor: pointer;
+        border: none;
+      }
+
+      .menu-toggle:hover {
+        background: var(--primary-light);
+      }
+
+      .dashboard-container.collapsed .menu-toggle i {
+        transform: rotate(90deg);
+      }
+
+      @media (max-width: 992px) {
+        .dashboard-container.collapsed .menu-toggle i {
+          transform: rotate(0deg);
+        }
+      }
+
+      .page-title {
+        font-family: "Poppins", sans-serif;
+        font-weight: 600;
+        font-size: 24px;
+        color: var(--text-dark);
+      }
+
+      .page-subtitle {
+        font-size: 14px;
+        color: var(--text-light);
+        margin-top: 5px;
+      }
+
+      .top-actions {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .date-filter {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 20px;
+        background: var(--secondary);
+        border: none;
+        border-radius: 10px;
+        font-family: "Inter", sans-serif;
+        font-size: 14px;
+        color: var(--text-dark);
+        cursor: pointer;
+        transition: var(--transition);
+      }
+
+      .date-filter:hover {
+        background: var(--primary-light);
+      }
+
+      .date-filter i {
+        color: var(--primary);
+      }
+
+      .notification-btn {
+        position: relative;
+        background: var(--secondary);
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        color: var(--text-light);
+        transition: var(--transition);
+        cursor: pointer;
+      }
+
+      .notification-btn:hover {
+        background: var(--primary-light);
+        color: var(--primary);
+      }
+
+      .notification-badge {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background: var(--accent-orange);
+        color: white;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        font-size: 11px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+      }
+
+      /* Overview Cards */
+      .overview-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+
+      .overview-card {
+        background: white;
+        border-radius: var(--card-radius);
+        padding: 25px;
+        box-shadow: var(--card-shadow);
+        transition: var(--transition);
+      }
+
+      .overview-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+      }
+
+      .overview-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 15px;
+      }
+
+      .overview-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+      }
+
+      .card-marketplace .overview-icon {
+        background: rgba(90, 103, 216, 0.1);
+        color: var(--primary);
+      }
+
+      .card-notes .overview-icon {
+        background: rgba(72, 187, 120, 0.1);
+        color: var(--accent-green);
+      }
+
+      .card-internship .overview-icon {
+        background: rgba(66, 153, 225, 0.1);
+        color: var(--accent-blue);
+      }
+
+      .card-services .overview-icon {
+        background: rgba(237, 137, 54, 0.1);
+        color: var(--accent-orange);
+      }
+
+      .card-skills .overview-icon {
+        background: rgba(159, 122, 234, 0.1);
+        color: var(--accent-purple);
+      }
+
+      .card-earnings .overview-icon {
+        background: rgba(236, 201, 75, 0.1);
+        color: var(--accent-yellow);
+      }
+
+      .overview-trend {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      .trend-up {
+        color: var(--accent-green);
+      }
+
+      .trend-down {
+        color: var(--accent-red);
+      }
+
+      .overview-content h3 {
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 5px;
+      }
+
+      .overview-content p {
+        font-size: 14px;
+        color: var(--text-light);
+      }
+
+      /* Charts Grid */
+      .charts-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+        gap: 30px;
+        margin-bottom: 30px;
+      }
+
+      @media (max-width: 1200px) {
+        .charts-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .chart-card {
+        background: white;
+        border-radius: var(--card-radius);
+        padding: 25px;
+        box-shadow: var(--card-shadow);
+      }
+
+      .chart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .chart-title {
+        font-family: "Poppins", sans-serif;
+        font-weight: 600;
+        font-size: 18px;
+        color: var(--text-dark);
+      }
+
+      .chart-subtitle {
+        font-size: 14px;
+        color: var(--text-light);
+        margin-top: 5px;
+      }
+
+      .chart-actions {
+        display: flex;
+        gap: 10px;
+      }
+
+      .chart-action-btn {
+        padding: 8px 12px;
+        background: var(--secondary);
+        border: none;
+        border-radius: 8px;
+        font-size: 13px;
+        color: var(--text-light);
+        cursor: pointer;
+        transition: var(--transition);
+      }
+
+      .chart-action-btn:hover {
+        background: var(--primary-light);
+        color: var(--primary);
+      }
+
+      .chart-action-btn.active {
+        background: var(--primary);
+        color: white;
+      }
+
+      .chart-container {
+        position: relative;
+        height: 300px;
+        width: 100%;
+      }
+
+      /* Insights Section */
+      .insights-section {
+        background: white;
+        border-radius: var(--card-radius);
+        padding: 30px;
+        box-shadow: var(--card-shadow);
+        margin-bottom: 30px;
+      }
+
+      .insights-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+      }
+
+      .insights-title {
+        font-family: "Poppins", sans-serif;
+        font-weight: 600;
+        font-size: 20px;
+        color: var(--text-dark);
+      }
+
+      .insights-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+      }
+
+      .insight-card {
+        padding: 20px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        transition: var(--transition);
+      }
+
+      .insight-card:hover {
+        border-color: var(--primary);
+        transform: translateY(-2px);
+      }
+
+      .insight-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        margin-bottom: 15px;
+      }
+
+      .insight-positive .insight-icon {
+        background: rgba(72, 187, 120, 0.1);
+        color: var(--accent-green);
+      }
+
+      .insight-warning .insight-icon {
+        background: rgba(236, 201, 75, 0.1);
+        color: var(--accent-yellow);
+      }
+
+      .insight-info .insight-icon {
+        background: rgba(66, 153, 225, 0.1);
+        color: var(--accent-blue);
+      }
+
+      .insight-card h4 {
+        font-weight: 600;
+        font-size: 16px;
+        margin-bottom: 10px;
+      }
+
+      .insight-card p {
+        font-size: 14px;
+        color: var(--text-light);
+        line-height: 1.5;
+      }
+
+      /* Activity Timeline */
+      .activity-timeline {
+        background: white;
+        border-radius: var(--card-radius);
+        padding: 30px;
+        box-shadow: var(--card-shadow);
+      }
+
+      .timeline-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+      }
+
+      .timeline-title {
+        font-family: "Poppins", sans-serif;
+        font-weight: 600;
+        font-size: 20px;
+        color: var(--text-dark);
+      }
+
+      .timeline {
+        position: relative;
+        padding-left: 30px;
+      }
+
+      .timeline::before {
+        content: "";
+        position: absolute;
+        left: 10px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: var(--border);
+      }
+
+      .timeline-item {
+        position: relative;
+        padding: 20px 0;
+      }
+
+      .timeline-item::before {
+        content: "";
+        position: absolute;
+        left: -30px;
+        top: 25px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: var(--primary);
+        border: 3px solid white;
+        box-shadow: 0 0 0 3px var(--primary-light);
+      }
+
+      .timeline-time {
+        font-size: 12px;
+        color: var(--text-light);
+        margin-bottom: 5px;
+      }
+
+      .timeline-content {
+        background: var(--secondary);
+        padding: 15px;
+        border-radius: 10px;
+      }
+
+      .timeline-content h4 {
+        font-weight: 600;
+        font-size: 14px;
+        margin-bottom: 5px;
+      }
+
+      .timeline-content p {
+        font-size: 13px;
+        color: var(--text-light);
+      }
+
+      /* Export Section */
+      .export-section {
+        display: flex;
+        justify-content: flex-end;
+        gap: 15px;
+        margin-bottom: 30px;
+      }
+
+      .export-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 20px;
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        font-family: "Inter", sans-serif;
+        font-size: 14px;
+        color: var(--text-dark);
+        cursor: pointer;
+        transition: var(--transition);
+      }
+
+      .export-btn:hover {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+      }
+
+      /* Footer */
+      .dashboard-footer {
+        text-align: center;
+        padding: 20px;
+        color: var(--text-light);
+        font-size: 14px;
+        border-top: 1px solid var(--border);
+        margin-top: 30px;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 992px) {
+        .dashboard-container {
+          grid-template-columns: 1fr;
+        }
+
+        .dashboard-container.collapsed {
+          grid-template-columns: 1fr;
+        }
+
+        .main-content {
+          padding: 20px;
+        }
+
+        .action-buttons {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+
+      @media (max-width: 1200px) {
+        .dashboard-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .main-content {
+          padding: 15px;
+        }
+
+        .action-buttons {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .top-bar {
+          padding: 15px;
+        }
+
+        .page-title {
+          font-size: 20px;
+        }
+
+        .charts-grid {
+          gap: 20px;
+        }
+
+        .chart-card {
+          padding: 20px;
+        }
+
+        .chart-container {
+          height: 250px;
+        }
+
+        .insights-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .export-section {
+          flex-direction: column;
+        }
+
+        .export-btn {
+          width: 100%;
+          justify-content: center;
+        }
+      }
+
+      @media (max-width: 576px) {
+        .top-bar {
+          flex-direction: column;
+          gap: 15px;
+          align-items: flex-start;
+        }
+
+        .page-info {
+          width: 100%;
+          justify-content: space-between;
+        }
+
+        .top-actions {
+          width: 100%;
+          justify-content: space-between;
+        }
+
+        .charts-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .overview-cards {
+          grid-template-columns: 1fr;
+        }
+
+        .chart-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 10px;
+        }
+
+        .chart-actions {
+          width: 100%;
+          justify-content: space-between;
+        }
+
+        .chart-action-btn {
+          flex: 1;
+          text-align: center;
+        }
+      }
+
+      /* Loading Animation */
+      @keyframes pulse {
+        0% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+
+      .loading {
+        animation: pulse 1.5s infinite;
+      }
+
+      /* Empty State */
+      .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: var(--text-light);
+      }
+
+      .empty-state-icon {
+        font-size: 48px;
+        color: var(--border);
+        margin-bottom: 20px;
+      }
+
+      .empty-state h3 {
+        font-family: "Poppins", sans-serif;
+        font-size: 18px;
+        margin-bottom: 10px;
+        color: var(--text-dark);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Overlay for mobile sidebar -->
+    <div class="overlay" id="overlay" onclick="toggleMobileSidebar()"></div>
+
+    <div class="dashboard-container" id="dashboardContainer">
+      <!-- Sidebar will be loaded here -->
+      <div id="sidebar-container"></div>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <!-- Top Bar -->
+        <div class="top-bar">
+          <div class="page-info">
+            <button class="menu-toggle" onclick="handleMenuToggle()">
+              <i class="fas fa-bars"></i>
+            </button>
+            <div>
+              <div class="page-title">Analytics Dashboard</div>
+              <div class="page-subtitle">
+                Track your campus activity and performance
+              </div>
+            </div>
+          </div>
+
+          <div class="top-actions">
+            <button class="date-filter" onclick="showDateRangePicker()">
+              <i class="far fa-calendar-alt"></i>
+              <span id="dateRange">Last 30 days</span>
+            </button>
+            <div
+              class="notification-btn"
+              onclick="
+                window.location.href = '../notifications/notifications.html'
+              "
+            >
+              <i class="far fa-bell"></i>
+              <span class="notification-badge">3</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Overview Cards -->
+        <div class="overview-cards">
+          <div class="overview-card card-marketplace">
+            <div class="overview-header">
+              <div class="overview-icon">
+                <i class="fas fa-shopping-cart"></i>
+              </div>
+              <div class="overview-trend trend-up">
+                <i class="fas fa-arrow-up"></i>
+                15.3%
+              </div>
+            </div>
+            <div class="overview-content">
+              <h3 id="marketplaceTotal">$1,240</h3>
+              <p>Marketplace Earnings</p>
+            </div>
+          </div>
+
+          <div class="overview-card card-notes">
+            <div class="overview-header">
+              <div class="overview-icon">
+                <i class="fas fa-book-open"></i>
+              </div>
+              <div class="overview-trend trend-up">
+                <i class="fas fa-arrow-up"></i>
+                42.8%
+              </div>
+            </div>
+            <div class="overview-content">
+              <h3 id="notesTotal">156</h3>
+              <p>Notes Downloads</p>
+            </div>
+          </div>
+
+          <div class="overview-card card-internship">
+            <div class="overview-header">
+              <div class="overview-icon">
+                <i class="fas fa-briefcase"></i>
+              </div>
+              <div class="overview-trend trend-up">
+                <i class="fas fa-arrow-up"></i>
+                8.7%
+              </div>
+            </div>
+            <div class="overview-content">
+              <h3 id="internshipTotal">12</h3>
+              <p>Internship Logs</p>
+            </div>
+          </div>
+
+          <div class="overview-card card-services">
+            <div class="overview-header">
+              <div class="overview-icon">
+                <i class="fas fa-concierge-bell"></i>
+              </div>
+              <div class="overview-trend trend-down">
+                <i class="fas fa-arrow-down"></i>
+                3.2%
+              </div>
+            </div>
+            <div class="overview-content">
+              <h3 id="servicesTotal">8</h3>
+              <p>Service Bookings</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="charts-grid">
+          <!-- Activity Chart -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <div>
+                <div class="chart-title">Activity Overview</div>
+                <div class="chart-subtitle">
+                  Daily activity across all features
+                </div>
+              </div>
+              <div class="chart-actions">
+                <button
+                  class="chart-action-btn active"
+                  onclick="changeChartTime('week')"
+                >
+                  Week
+                </button>
+                <button
+                  class="chart-action-btn"
+                  onclick="changeChartTime('month')"
+                >
+                  Month
+                </button>
+                <button
+                  class="chart-action-btn"
+                  onclick="changeChartTime('quarter')"
+                >
+                  Quarter
+                </button>
+              </div>
+            </div>
+            <div class="chart-container">
+              <canvas id="activityChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Category Distribution -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <div>
+                <div class="chart-title">Category Distribution</div>
+                <div class="chart-subtitle">Activity breakdown by feature</div>
+              </div>
+            </div>
+            <div class="chart-container">
+              <canvas id="categoryChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Earnings Trend -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <div>
+                <div class="chart-title">Earnings Trend</div>
+                <div class="chart-subtitle">
+                  Marketplace & Services earnings
+                </div>
+              </div>
+            </div>
+            <div class="chart-container">
+              <canvas id="earningsChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Skills Progress -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <div>
+                <div class="chart-title">Skills Progress</div>
+                <div class="chart-subtitle">Skill development over time</div>
+              </div>
+            </div>
+            <div class="chart-container">
+              <canvas id="skillsChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Insights Section -->
+        <div class="insights-section">
+          <div class="insights-header">
+            <div class="insights-title">Performance Insights</div>
+            <button class="chart-action-btn" onclick="refreshInsights()">
+              <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+          </div>
+          <div class="insights-grid">
+            <div class="insight-card insight-positive">
+              <div class="insight-icon">
+                <i class="fas fa-chart-line"></i>
+              </div>
+              <h4>📈 High Engagement Rate</h4>
+              <p>
+                Your notes have a 92% satisfaction rate, higher than campus
+                average of 78%
+              </p>
+            </div>
+            <div class="insight-card insight-warning">
+              <div class="insight-icon">
+                <i class="fas fa-exclamation-circle"></i>
+              </div>
+              <h4>⏰ Peak Activity Hours</h4>
+              <p>
+                Most interactions happen between 6-9 PM. Schedule posts during
+                these hours
+              </p>
+            </div>
+            <div class="insight-card insight-info">
+              <div class="insight-icon">
+                <i class="fas fa-lightbulb"></i>
+              </div>
+              <h4>💰 Earning Opportunity</h4>
+              <p>
+                Data Science notes are in high demand. Consider creating more
+                content
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Activity Timeline -->
+        <div class="activity-timeline">
+          <div class="timeline-header">
+            <div class="timeline-title">Recent Activity Timeline</div>
+            <button class="chart-action-btn" onclick="loadMoreActivity()">
+              <i class="fas fa-plus"></i> Load More
+            </button>
+          </div>
+          <div class="timeline" id="activityTimeline">
+            <!-- Timeline items will be loaded here -->
+          </div>
+        </div>
+
+        <!-- Export Section -->
+        <div class="export-section">
+          <button class="export-btn" onclick="exportData('pdf')">
+            <i class="fas fa-file-pdf"></i> Export as PDF
+          </button>
+          <button class="export-btn" onclick="exportData('csv')">
+            <i class="fas fa-file-csv"></i> Export as CSV
+          </button>
+          <button class="export-btn" onclick="exportData('print')">
+            <i class="fas fa-print"></i> Print Report
+          </button>
+        </div>
+
+        <!-- Footer -->
+        <div class="dashboard-footer">
+          <p>UniSpace Analytics Dashboard &copy; 2024</p>
+          <p style="font-size: 12px; margin-top: 5px">
+            Data updated: <span id="lastUpdated">Today, 10:30 AM</span>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Load sidebar content from the sidebar folder
+      // Load sidebar content
+      function loadSidebar() {
+        console.log("Loading sidebar...");
+        fetch("../sidebar/sidebar.html")
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`Failed to load sidebar: ${response.status}`);
+            }
+            return response.text();
+          })
+          .then((data) => {
+            console.log("Sidebar loaded successfully");
+            document.getElementById("sidebar-container").innerHTML = data;
+
+            // Mark analytics as active
+            setTimeout(() => {
+              const analyticsLink = document.querySelector(
+                'a[href*="analytics.html"]',
+              );
+              if (analyticsLink) {
+                analyticsLink.classList.add("active");
+              }
+            }, 100);
+          })
+          .catch((error) => {
+            console.error("Error loading sidebar:", error);
+            document.getElementById("sidebar-container").innerHTML = `
+        <div class="sidebar" style="padding: 20px; color: red;">
+          <h3>Sidebar Error</h3>
+          <p>${error.message}</p>
+          <p>Please check if sidebar.html exists in the sidebar folder.</p>
+        </div>
+      `;
+          });
+      }
+
+      // Handle menu toggle for both desktop and mobile
+      function handleMenuToggle() {
+        if (window.innerWidth > 992) {
+          // Desktop: toggle sidebar collapse
+          toggleDesktopSidebar();
+        } else {
+          // Mobile: toggle sidebar visibility
+          toggleMobileSidebar();
+        }
+      }
+
+      // Toggle desktop sidebar collapse/expand
+      function toggleDesktopSidebar() {
+        const dashboardContainer =
+          document.getElementById("dashboardContainer");
+        const menuToggleIcon = document.querySelector(".menu-toggle i");
+
+        dashboardContainer.classList.toggle("collapsed");
+
+        // Rotate the hamburger icon when collapsed
+        if (dashboardContainer.classList.contains("collapsed")) {
+          menuToggleIcon.style.transform = "rotate(90deg)";
+        } else {
+          menuToggleIcon.style.transform = "rotate(0deg)";
+        }
+
+        // Save state to localStorage
+        const isCollapsed = dashboardContainer.classList.contains("collapsed");
+        localStorage.setItem("sidebarCollapsed", isCollapsed);
+      }
+
+      // Toggle mobile sidebar
+      function toggleMobileSidebar() {
+        const sidebar = document.querySelector(".sidebar");
+        const overlay = document.getElementById("overlay");
+
+        if (sidebar) {
+          sidebar.classList.toggle("active");
+          overlay.classList.toggle("active");
+        }
+      }
+
+      // Close mobile sidebar when clicking on nav items
+      function closeMobileSidebarOnClick() {
+        if (window.innerWidth <= 992) {
+          toggleMobileSidebar();
+        }
+      }
+
+      // Initialize variables
+      let activityChart, categoryChart, earningsChart, skillsChart;
+      let currentTimeRange = "week";
+
+      // Sample data
+      const analyticsData = {
+        marketplace: {
+          total: 1240,
+          trend: 15.3,
+          weekly: [120, 190, 150, 210, 180, 200, 240],
+          monthly: [
+            800, 920, 1100, 950, 1240, 980, 1150, 1320, 1400, 1250, 1180, 1240,
+          ],
+        },
+        notes: {
+          total: 156,
+          trend: 42.8,
+          weekly: [20, 25, 30, 28, 35, 40, 42],
+          monthly: [120, 135, 145, 130, 156, 140, 148, 160, 155, 152, 150, 156],
+        },
+        internship: {
+          total: 12,
+          trend: 8.7,
+          weekly: [1, 2, 1, 3, 2, 1, 2],
+          monthly: [8, 9, 10, 11, 12, 10, 11, 12, 11, 12, 12, 12],
+        },
+        services: {
+          total: 8,
+          trend: -3.2,
+          weekly: [2, 1, 2, 1, 1, 2, 1],
+          monthly: [10, 9, 8, 9, 8, 7, 8, 8, 7, 8, 8, 8],
+        },
+      };
+
+      // Timeline data
+      const timelineData = [
+        {
+          time: "2 hours ago",
+          title: "Calculus Textbook Sold",
+          description: "Earned $35 from marketplace sale",
+        },
+        {
+          time: "5 hours ago",
+          title: "Notes Rating Received",
+          description: "Data Structures notes rated 5 stars",
+        },
+        {
+          time: "1 day ago",
+          title: "Internship Log Updated",
+          description: "Added weekly progress for TechCorp",
+        },
+        {
+          time: "2 days ago",
+          title: "Service Booking",
+          description: "Python tutoring session booked",
+        },
+        {
+          time: "3 days ago",
+          title: "Skill Level Up",
+          description: "React.js skill reached Intermediate",
+        },
+      ];
+
+      // Initialize on page load
+      document.addEventListener("DOMContentLoaded", function () {
+        // Load sidebar
+        loadSidebar();
+
+        // Initialize charts and data
+        initializeCharts();
+        updateOverviewCards();
+        loadTimeline();
+        updateLastUpdated();
+        setupEventListeners();
+
+        // Close sidebar when clicking on overlay
+        const overlay = document.getElementById("overlay");
+        if (overlay) {
+          overlay.addEventListener("click", toggleMobileSidebar);
+        }
+
+        // Handle window resize
+        window.addEventListener("resize", function () {
+          const sidebar = document.querySelector(".sidebar");
+          const overlay = document.getElementById("overlay");
+          const dashboardContainer =
+            document.getElementById("dashboardContainer");
+
+          if (window.innerWidth > 992) {
+            // On desktop, ensure sidebar is visible and overlay is hidden
+            if (sidebar) sidebar.classList.remove("active");
+            if (overlay) overlay.classList.remove("active");
+
+            // Restore collapsed state if it was saved
+            const isCollapsed =
+              localStorage.getItem("sidebarCollapsed") === "true";
+            const menuToggleIcon = document.querySelector(".menu-toggle i");
+
+            if (isCollapsed) {
+              dashboardContainer.classList.add("collapsed");
+              if (menuToggleIcon)
+                menuToggleIcon.style.transform = "rotate(90deg)";
+            } else {
+              dashboardContainer.classList.remove("collapsed");
+              if (menuToggleIcon)
+                menuToggleIcon.style.transform = "rotate(0deg)";
+            }
+          } else {
+            // On mobile, ensure sidebar is hidden and not collapsed
+            dashboardContainer.classList.remove("collapsed");
+            const menuToggleIcon = document.querySelector(".menu-toggle i");
+            if (menuToggleIcon) menuToggleIcon.style.transform = "rotate(0deg)";
+          }
+        });
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener("click", function (event) {
+          const sidebar = document.querySelector(".sidebar");
+          const menuToggle = document.querySelector(".menu-toggle");
+
+          if (
+            window.innerWidth <= 992 &&
+            sidebar &&
+            !sidebar.contains(event.target) &&
+            menuToggle &&
+            !menuToggle.contains(event.target) &&
+            sidebar.classList.contains("active")
+          ) {
+            toggleMobileSidebar();
+          }
+        });
+      });
+
+      // Initialize all charts
+      function initializeCharts() {
+        // Activity Chart (Line)
+        const activityCtx = document
+          .getElementById("activityChart")
+          .getContext("2d");
+        activityChart = new Chart(activityCtx, {
+          type: "line",
+          data: {
+            labels: getLabelsForTimeRange(currentTimeRange),
+            datasets: [
+              {
+                label: "Marketplace",
+                data: analyticsData.marketplace.weekly,
+                borderColor: "#5a67d8",
+                backgroundColor: "rgba(90, 103, 216, 0.1)",
+                tension: 0.4,
+                fill: true,
+              },
+              {
+                label: "Notes",
+                data: analyticsData.notes.weekly,
+                borderColor: "#48bb78",
+                backgroundColor: "rgba(72, 187, 120, 0.1)",
+                tension: 0.4,
+                fill: true,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: "top",
+                labels: {
+                  font: {
+                    family: "Inter",
+                    size: 12,
+                  },
+                },
+              },
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                grid: {
+                  color: "rgba(0, 0, 0, 0.05)",
+                },
+                ticks: {
+                  font: {
+                    family: "Inter",
+                  },
+                },
+              },
+              x: {
+                grid: {
+                  color: "rgba(0, 0, 0, 0.05)",
+                },
+                ticks: {
+                  font: {
+                    family: "Inter",
+                  },
+                },
+              },
+            },
+          },
+        });
+
+        // Category Chart (Doughnut)
+        const categoryCtx = document
+          .getElementById("categoryChart")
+          .getContext("2d");
+        categoryChart = new Chart(categoryCtx, {
+          type: "doughnut",
+          data: {
+            labels: [
+              "Marketplace",
+              "Notes",
+              "Internship",
+              "Services",
+              "Skills",
+            ],
+            datasets: [
+              {
+                data: [35, 28, 18, 12, 7],
+                backgroundColor: [
+                  "#5a67d8",
+                  "#48bb78",
+                  "#4299e1",
+                  "#ed8936",
+                  "#9f7aea",
+                ],
+                borderWidth: 2,
+                borderColor: "white",
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: "70%",
+            plugins: {
+              legend: {
+                position: "right",
+                labels: {
+                  font: {
+                    family: "Inter",
+                    size: 12,
+                  },
+                  padding: 20,
+                },
+              },
+            },
+          },
+        });
+
+        // Earnings Chart (Bar)
+        const earningsCtx = document
+          .getElementById("earningsChart")
+          .getContext("2d");
+        earningsChart = new Chart(earningsCtx, {
+          type: "bar",
+          data: {
+            labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+            datasets: [
+              {
+                label: "Marketplace",
+                data: [320, 450, 380, 520, 410, 480],
+                backgroundColor: "#5a67d8",
+                borderRadius: 6,
+              },
+              {
+                label: "Services",
+                data: [180, 220, 190, 240, 210, 230],
+                backgroundColor: "#ed8936",
+                borderRadius: 6,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: "top",
+                labels: {
+                  font: {
+                    family: "Inter",
+                    size: 12,
+                  },
+                },
+              },
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                grid: {
+                  color: "rgba(0, 0, 0, 0.05)",
+                },
+                ticks: {
+                  font: {
+                    family: "Inter",
+                  },
+                  callback: function (value) {
+                    return "$" + value;
+                  },
+                },
+              },
+              x: {
+                grid: {
+                  color: "rgba(0, 0, 0, 0.05)",
+                },
+                ticks: {
+                  font: {
+                    family: "Inter",
+                  },
+                },
+              },
+            },
+          },
+        });
+
+        // Skills Chart (Radar)
+        const skillsCtx = document
+          .getElementById("skillsChart")
+          .getContext("2d");
+        skillsChart = new Chart(skillsCtx, {
+          type: "radar",
+          data: {
+            labels: [
+              "Python",
+              "JavaScript",
+              "React",
+              "Data Structures",
+              "Algorithms",
+              "Communication",
+              "Teamwork",
+            ],
+            datasets: [
+              {
+                label: "Current Level",
+                data: [85, 75, 80, 90, 70, 85, 88],
+                backgroundColor: "rgba(90, 103, 216, 0.2)",
+                borderColor: "#5a67d8",
+                borderWidth: 2,
+                pointBackgroundColor: "#5a67d8",
+              },
+              {
+                label: "Previous Month",
+                data: [75, 65, 70, 80, 65, 80, 82],
+                backgroundColor: "rgba(72, 187, 120, 0.2)",
+                borderColor: "#48bb78",
+                borderWidth: 2,
+                pointBackgroundColor: "#48bb78",
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              r: {
+                angleLines: {
+                  color: "rgba(0, 0, 0, 0.1)",
+                },
+                grid: {
+                  color: "rgba(0, 0, 0, 0.05)",
+                },
+                pointLabels: {
+                  font: {
+                    family: "Inter",
+                    size: 11,
+                  },
+                },
+                ticks: {
+                  backdropColor: "transparent",
+                  font: {
+                    family: "Inter",
+                    size: 10,
+                  },
+                },
+                suggestedMin: 0,
+                suggestedMax: 100,
+              },
+            },
+            plugins: {
+              legend: {
+                position: "top",
+                labels: {
+                  font: {
+                    family: "Inter",
+                    size: 12,
+                  },
+                },
+              },
+            },
+          },
+        });
+      }
+
+      // Update overview cards with data
+      function updateOverviewCards() {
+        document.getElementById("marketplaceTotal").textContent =
+          "$" + analyticsData.marketplace.total;
+        document.getElementById("notesTotal").textContent =
+          analyticsData.notes.total;
+        document.getElementById("internshipTotal").textContent =
+          analyticsData.internship.total;
+        document.getElementById("servicesTotal").textContent =
+          analyticsData.services.total;
+      }
+
+      // Load timeline data
+      function loadTimeline() {
+        const timeline = document.getElementById("activityTimeline");
+        timeline.innerHTML = "";
+
+        timelineData.forEach((item) => {
+          const timelineItem = document.createElement("div");
+          timelineItem.className = "timeline-item";
+          timelineItem.innerHTML = `
+                    <div class="timeline-time">${item.time}</div>
+                    <div class="timeline-content">
+                        <h4>${item.title}</h4>
+                        <p>${item.description}</p>
+                    </div>
+                `;
+          timeline.appendChild(timelineItem);
+        });
+      }
+
+      // Change chart time range
+      function changeChartTime(range) {
+        currentTimeRange = range;
+
+        // Update button states
+        document.querySelectorAll(".chart-action-btn").forEach((btn) => {
+          btn.classList.remove("active");
+        });
+        event.target.classList.add("active");
+
+        // Update chart labels and data
+        const labels = getLabelsForTimeRange(range);
+        activityChart.data.labels = labels;
+
+        // Update data based on range
+        if (range === "week") {
+          activityChart.data.datasets[0].data =
+            analyticsData.marketplace.weekly;
+          activityChart.data.datasets[1].data = analyticsData.notes.weekly;
+        } else if (range === "month") {
+          activityChart.data.datasets[0].data =
+            analyticsData.marketplace.monthly.slice(0, 7);
+          activityChart.data.datasets[1].data =
+            analyticsData.notes.monthly.slice(0, 7);
+        } else {
+          // Quarter - show 3 months
+          activityChart.data.datasets[0].data =
+            analyticsData.marketplace.monthly.slice(0, 3);
+          activityChart.data.datasets[1].data =
+            analyticsData.notes.monthly.slice(0, 3);
+        }
+
+        activityChart.update();
+      }
+
+      // Get labels for time range
+      function getLabelsForTimeRange(range) {
+        if (range === "week") {
+          return ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+        } else if (range === "month") {
+          return [
+            "Week 1",
+            "Week 2",
+            "Week 3",
+            "Week 4",
+            "Week 5",
+            "Week 6",
+            "Week 7",
+          ];
+        } else {
+          return ["Jan-Mar", "Apr-Jun", "Jul-Sep"];
+        }
+      }
+
+      // Show date range picker
+      function showDateRangePicker() {
+        const ranges = [
+          { label: "Last 7 days", value: "7d" },
+          { label: "Last 30 days", value: "30d" },
+          { label: "Last 90 days", value: "90d" },
+          { label: "This year", value: "year" },
+          { label: "Custom range", value: "custom" },
+        ];
+
+        // Create custom dropdown
+        const dropdown = document.createElement("div");
+        dropdown.style.cssText = `
+                position: absolute;
+                background: white;
+                border-radius: 10px;
+                box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+                padding: 10px;
+                z-index: 1000;
+                min-width: 200px;
+            `;
+
+        ranges.forEach((range) => {
+          const option = document.createElement("div");
+          option.textContent = range.label;
+          option.style.cssText = `
+                    padding: 10px;
+                    cursor: pointer;
+                    border-radius: 5px;
+                    margin: 2px 0;
+                    transition: background 0.2s;
+                `;
+          option.onmouseover = () =>
+            (option.style.background = "var(--secondary)");
+          option.onmouseout = () => (option.style.background = "transparent");
+          option.onclick = () => {
+            document.getElementById("dateRange").textContent = range.label;
+            document.body.removeChild(dropdown);
+            // In real app, this would update all charts
+            alert(`Date range changed to: ${range.label}`);
+          };
+          dropdown.appendChild(option);
+        });
+
+        const buttonRect = event.target.getBoundingClientRect();
+        dropdown.style.top = buttonRect.bottom + 5 + "px";
+        dropdown.style.left = buttonRect.left + "px";
+
+        document.body.appendChild(dropdown);
+
+        // Close dropdown when clicking outside
+        setTimeout(() => {
+          const closeHandler = (e) => {
+            if (!dropdown.contains(e.target) && e.target !== event.target) {
+              document.body.removeChild(dropdown);
+              document.removeEventListener("click", closeHandler);
+            }
+          };
+          document.addEventListener("click", closeHandler);
+        }, 0);
+      }
+
+      // Export data
+      function exportData(format) {
+        switch (format) {
+          case "pdf":
+            alert(
+              "Exporting as PDF... This would generate a PDF report in a real app.",
+            );
+            break;
+          case "csv":
+            alert(
+              "Exporting as CSV... This would download a CSV file in a real app.",
+            );
+            break;
+          case "print":
+            window.print();
+            break;
+        }
+      }
+
+      // Refresh insights
+      function refreshInsights() {
+        const btn = event.target.closest("button");
+        const icon = btn.querySelector("i");
+
+        // Show loading state
+        btn.disabled = true;
+        icon.className = "fas fa-spinner fa-spin";
+
+        // Simulate API call
+        setTimeout(() => {
+          btn.disabled = false;
+          icon.className = "fas fa-sync-alt";
+          alert("Insights refreshed with latest data!");
+        }, 1500);
+      }
+
+      // Load more activity
+      function loadMoreActivity() {
+        const btn = event.target.closest("button");
+        const icon = btn.querySelector("i");
+
+        btn.disabled = true;
+        icon.className = "fas fa-spinner fa-spin";
+
+        // Simulate loading more data
+        setTimeout(() => {
+          const timeline = document.getElementById("activityTimeline");
+          const newItem = document.createElement("div");
+          newItem.className = "timeline-item";
+          newItem.innerHTML = `
+                    <div class="timeline-time">Just now</div>
+                    <div class="timeline-content">
+                        <h4>New Activity Loaded</h4>
+                        <p>Additional activity timeline loaded</p>
+                    </div>
+                `;
+          timeline.appendChild(newItem);
+
+          btn.disabled = false;
+          icon.className = "fas fa-plus";
+
+          alert("More activity loaded!");
+        }, 1000);
+      }
+
+      // Update last updated time
+      function updateLastUpdated() {
+        const now = new Date();
+        const options = {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        };
+        document.getElementById("lastUpdated").textContent =
+          now.toLocaleDateString("en-US", options);
+      }
+
+      // Setup event listeners
+      function setupEventListeners() {
+        // Auto-refresh data every 5 minutes
+        setInterval(
+          () => {
+            updateLastUpdated();
+            // In real app, this would fetch new data
+            console.log("Auto-refreshing analytics data...");
+          },
+          5 * 60 * 1000,
+        );
+
+        // Handle window resize for charts
+        let resizeTimer;
+        window.addEventListener("resize", () => {
+          clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(() => {
+            activityChart.resize();
+            categoryChart.resize();
+            earningsChart.resize();
+            skillsChart.resize();
+          }, 250);
+        });
+      }
+
+      // Simulate real-time updates
+      function simulateRealTimeUpdate() {
+        setInterval(() => {
+          // Randomly update some data
+          if (Math.random() > 0.7) {
+            const randomIncrease = Math.floor(Math.random() * 20) + 1;
+            analyticsData.marketplace.total += randomIncrease;
+            analyticsData.marketplace.trend += 0.5;
+
+            updateOverviewCards();
+            console.log("Marketplace data updated");
+          }
+        }, 30000); // Every 30 seconds
+      }
+
+      // Start real-time updates
+      simulateRealTimeUpdate();
+    </script>
+  </body>
+</html>
