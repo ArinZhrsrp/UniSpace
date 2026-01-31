@@ -1,0 +1,1737 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>UniSpace - Skills Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --primary: #5a67d8;
+        --primary-light: #c3dafe;
+        --primary-dark: #434190;
+        --secondary: #f7fafc;
+        --accent-green: #48bb78;
+        --accent-orange: #ed8936;
+        --accent-purple: #9f7aea;
+        --accent-blue: #4299e1;
+        --accent-red: #f56565;
+        --accent-teal: #38b2ac;
+        --accent-yellow: #fbbf24;
+        --accent-pink: #ed64a6;
+        --accent-cyan: #0bc5ea;
+        --text-dark: #2d3748;
+        --text-light: #718096;
+        --border: #e2e8f0;
+        --border-light: #f1f5f9;
+        --border-medium: #e5e7eb;
+        --border-dark: #cbd5e0;
+        --border-visible: #d1d9e6; /* Added for more visible borders */
+        --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+        --card-radius: 16px;
+        --transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        color: var(--text-dark);
+        line-height: 1.6;
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      /* Main Container */
+      .main-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        gap: 24px;
+        min-height: calc(100vh - 40px);
+      }
+
+      @media (max-width: 992px) {
+        .main-container {
+          grid-template-columns: 1fr;
+          gap: 20px;
+        }
+      }
+
+      /* Sidebar */
+      .sidebar {
+        background: white;
+        border-radius: var(--card-radius);
+        padding: 24px;
+        height: fit-content;
+        border: 1px solid var(--border-visible);
+        box-shadow: var(--card-shadow);
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 32px;
+        padding-bottom: 24px;
+        border-bottom: 1px solid var(--border-light);
+      }
+
+      .logo-icon {
+        width: 42px;
+        height: 42px;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        color: white;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 20px;
+      }
+
+      .logo-text {
+        font-family: "Poppins", sans-serif;
+        font-weight: 800;
+        font-size: 22px;
+        background: linear-gradient(to right, var(--primary), var(--primary-dark));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .nav-section {
+        margin-bottom: 24px;
+      }
+
+      .nav-title {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-light);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 12px;
+        padding-left: 8px;
+      }
+
+      .nav-links {
+        list-style: none;
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        margin: 4px 0;
+        color: var(--text-light);
+        text-decoration: none;
+        transition: var(--transition);
+        border-radius: 10px;
+        border: 1px solid transparent;
+      }
+
+      .nav-item:hover {
+        color: var(--primary);
+        background: rgba(90, 103, 216, 0.05);
+        border-color: var(--border-light);
+      }
+
+      .nav-item.active {
+        color: var(--primary);
+        background: rgba(90, 103, 216, 0.1);
+        border: 1px solid rgba(90, 103, 216, 0.2);
+        font-weight: 500;
+      }
+
+      .nav-icon {
+        font-size: 16px;
+        width: 20px;
+        text-align: center;
+      }
+
+      .nav-text {
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      /* Quick Stats in Sidebar */
+      .quick-stats {
+        padding: 0 8px;
+      }
+
+      .quick-stat {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px;
+        margin-bottom: 8px;
+        background: var(--secondary);
+        border-radius: 8px;
+        border: 1px solid var(--border-light);
+        font-size: 13px;
+        color: var(--text-dark);
+      }
+
+      /* Main Content */
+      .main-content {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+      }
+
+      /* Top Bar */
+      .top-bar {
+        background: white;
+        border-radius: var(--card-radius);
+        padding: 20px 24px;
+        border: 1px solid var(--border-visible);
+        box-shadow: var(--card-shadow);
+      }
+
+      .page-info {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 16px;
+      }
+
+      .page-title {
+        font-family: "Poppins", sans-serif;
+        font-weight: 600;
+        font-size: 24px;
+        color: var(--text-dark);
+      }
+
+      .page-subtitle {
+        color: var(--text-light);
+        font-size: 14px;
+        margin-top: 4px;
+      }
+
+      .top-actions {
+        display: flex;
+        gap: 12px;
+      }
+
+      .action-btn {
+        padding: 10px 20px;
+        border-radius: 10px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        border: 1px solid transparent;
+      }
+
+      .action-btn.primary {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+      }
+
+      .action-btn.primary:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(90, 103, 216, 0.3);
+      }
+
+      .action-btn.secondary {
+        background: var(--secondary);
+        color: var(--text-dark);
+        border: 1px solid var(--border-visible);
+      }
+
+      .action-btn.secondary:hover {
+        background: #e2e8f0;
+        transform: translateY(-2px);
+        border-color: var(--border-dark);
+      }
+
+      .user-profile-btn {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: var(--secondary);
+        border: 1px solid var(--border-visible);
+        padding: 10px 16px;
+        border-radius: 10px;
+        color: var(--text-dark);
+        font-weight: 500;
+        cursor: pointer;
+        transition: var(--transition);
+        font-size: 14px;
+      }
+
+      .user-profile-btn:hover {
+        background: #e2e8f0;
+        border-color: var(--border-dark);
+      }
+
+      .user-avatar-small {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--accent-purple) 100%);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 14px;
+      }
+
+      /* Skills Overview */
+      .skills-overview {
+        background: white;
+        border-radius: var(--card-radius);
+        padding: 24px;
+        border: 1px solid var(--border-visible);
+        box-shadow: var(--card-shadow);
+      }
+
+      .overview-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+        gap: 16px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid var(--border-light);
+      }
+
+      .overview-title {
+        font-family: "Poppins", sans-serif;
+        font-weight: 600;
+        font-size: 20px;
+        color: var(--text-dark);
+        margin-bottom: 8px;
+      }
+
+      .overview-subtitle {
+        color: var(--text-light);
+        font-size: 14px;
+      }
+
+      .progress-indicator {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .progress-circle {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: conic-gradient(var(--primary) 75%, var(--border-light) 0);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        border: 4px solid white;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      }
+
+      .progress-circle-inner {
+        width: 64px;
+        height: 64px;
+        background: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Poppins", sans-serif;
+        font-weight: 700;
+        font-size: 18px;
+        color: var(--text-dark);
+      }
+
+      .progress-text {
+        font-size: 14px;
+        color: var(--text-light);
+      }
+
+      .progress-text strong {
+        color: var(--text-dark);
+        font-weight: 600;
+      }
+
+      /* Overview Grid */
+      .overview-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+      }
+
+      .overview-card {
+        background: var(--secondary);
+        border-radius: 12px;
+        padding: 20px;
+        border: 1px solid var(--border-visible);
+        transition: var(--transition);
+      }
+
+      .overview-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
+        border-color: var(--border-dark);
+      }
+
+      .overview-card-title {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text-light);
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .overview-card-value {
+        font-family: "Poppins", sans-serif;
+        font-weight: 600;
+        font-size: 24px;
+        color: var(--text-dark);
+      }
+
+      .overview-card-subvalue {
+        font-size: 14px;
+        color: var(--text-light);
+        margin-top: 4px;
+      }
+
+      /* Skills Categories */
+      .skills-categories {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+        padding: 20px;
+        background: white;
+        border-radius: var(--card-radius);
+        border: 1px solid var(--border-visible);
+        box-shadow: var(--card-shadow);
+      }
+
+      .category-btn {
+        padding: 10px 20px;
+        border-radius: 30px;
+        border: 1px solid var(--border-visible);
+        background: white;
+        color: var(--text-dark);
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: var(--transition);
+      }
+
+      .category-btn:hover {
+        background: var(--secondary);
+        border-color: var(--primary-light);
+      }
+
+      .category-btn.active {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+      }
+
+      /* ========== SKILLS GRID CONTAINER WITH PROMINENT BORDER ========== */
+      .skills-grid-container {
+        background: white;
+        border-radius: var(--card-radius);
+        padding: 24px;
+        border: 2px solid var(--border-visible); /* Thicker border */
+        box-shadow: var(--card-shadow);
+        position: relative;
+      }
+
+      .skills-grid-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary), var(--accent-purple));
+        border-radius: var(--card-radius) var(--card-radius) 0 0;
+      }
+
+      .skills-grid-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid var(--border-light); /* Thicker border */
+      }
+
+      .skills-grid-title {
+        font-family: "Poppins", sans-serif;
+        font-weight: 600;
+        font-size: 18px;
+        color: var(--text-dark);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .skills-grid-title i {
+        color: var(--primary);
+      }
+
+      .skills-count {
+        background: var(--primary);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 500;
+        border: 2px solid white;
+        box-shadow: 0 2px 8px rgba(90, 103, 216, 0.1);
+      }
+
+      /* Skills Grid */
+      .skills-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+      }
+
+      @media (max-width: 768px) {
+        .skills-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* ========== SKILL CARD WITH CLEAN BORDERS ========== */
+      .skill-card {
+        background: white;
+        border-radius: 12px;
+        border: 2px solid var(--border-visible); /* Thicker border */
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+        height: 100%;
+      }
+
+      .skill-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+        border-color: var(--border-dark);
+      }
+
+      .skill-card-header {
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+        padding: 20px;
+        border-bottom: 2px solid var(--border-light); /* Thicker border */
+        background: linear-gradient(135deg, rgba(90, 103, 216, 0.02) 0%, rgba(90, 103, 216, 0.01) 100%);
+      }
+
+      .skill-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        color: white;
+        border: 2px solid white;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        flex-shrink: 0;
+      }
+
+      .skill-icon.technical {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--accent-blue) 100%);
+      }
+
+      .skill-icon.soft {
+        background: linear-gradient(135deg, var(--accent-green) 0%, var(--accent-teal) 100%);
+      }
+
+      .skill-icon.business {
+        background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-pink) 100%);
+      }
+
+      .skill-icon.tool {
+        background: linear-gradient(135deg, var(--accent-orange) 0%, var(--accent-yellow) 100%);
+      }
+
+      .skill-info {
+        flex: 1;
+      }
+
+      .skill-name {
+        font-family: "Poppins", sans-serif;
+        font-weight: 600;
+        font-size: 18px;
+        color: var(--text-dark);
+        margin-bottom: 4px;
+      }
+
+      .skill-category {
+        font-size: 12px;
+        color: var(--text-light);
+        background: var(--secondary);
+        padding: 4px 10px;
+        border-radius: 30px;
+        display: inline-block;
+        margin-bottom: 12px;
+        border: 1px solid var(--border-light);
+      }
+
+      .skill-level {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 16px;
+      }
+
+      .level-badge {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border: 1px solid;
+      }
+
+      .level-badge.beginner {
+        background: rgba(66, 153, 225, 0.1);
+        color: var(--accent-blue);
+        border-color: rgba(66, 153, 225, 0.2);
+      }
+
+      .level-badge.intermediate {
+        background: rgba(154, 230, 180, 0.1);
+        color: var(--accent-green);
+        border-color: rgba(154, 230, 180, 0.2);
+      }
+
+      .level-badge.advanced {
+        background: rgba(90, 103, 216, 0.1);
+        color: var(--primary);
+        border-color: rgba(90, 103, 216, 0.2);
+      }
+
+      .level-badge.expert {
+        background: rgba(159, 122, 234, 0.1);
+        color: var(--accent-purple);
+        border-color: rgba(159, 122, 234, 0.2);
+      }
+
+      .level-number {
+        font-size: 14px;
+        color: var(--text-light);
+      }
+
+      /* ========== PROGRESS BAR WITH BORDER ========== */
+      .progress-container {
+        padding: 20px;
+        border-top: 2px solid var(--border-light); /* Thicker border */
+        border-bottom: 2px solid var(--border-light); /* Thicker border */
+        background: #f8fafc;
+      }
+
+      .progress-label {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        font-size: 13px;
+        color: var(--text-light);
+      }
+
+      .progress-bar {
+        height: 10px; /* Slightly taller */
+        background: white;
+        border-radius: 5px;
+        overflow: hidden;
+        border: 2px solid var(--border-visible); /* Thicker border */
+      }
+
+      .progress-fill {
+        height: 100%;
+        border-radius: 3px;
+        transition: width 1s ease-in-out;
+      }
+
+      /* ========== ACTIVITY SOURCES WITH BORDER ========== */
+      .activity-sources {
+        padding: 20px;
+        background: white;
+      }
+
+      .sources-title {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-light);
+        margin-bottom: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .sources-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .source-tag {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        background: var(--secondary);
+        border-radius: 20px;
+        font-size: 12px;
+        color: var(--text-light);
+        border: 1px solid var(--border-light);
+      }
+
+      .source-tag i {
+        font-size: 10px;
+      }
+
+      .source-tag.internship {
+        background: rgba(90, 103, 216, 0.05);
+        color: var(--primary);
+        border-color: rgba(90, 103, 216, 0.1);
+      }
+
+      .source-tag.notes {
+        background: rgba(72, 187, 120, 0.05);
+        color: var(--accent-green);
+        border-color: rgba(72, 187, 120, 0.1);
+      }
+
+      .source-tag.services {
+        background: rgba(237, 137, 54, 0.05);
+        color: var(--accent-orange);
+        border-color: rgba(237, 137, 54, 0.1);
+      }
+
+      .source-tag.courses {
+        background: rgba(159, 122, 234, 0.05);
+        color: var(--accent-purple);
+        border-color: rgba(159, 122, 234, 0.1);
+      }
+
+      /* ========== RECENT ACTIVITY WITH BORDERS ========== */
+      .recent-activity {
+        background: white;
+        border-radius: var(--card-radius);
+        padding: 24px;
+        border: 2px solid var(--border-visible); /* Thicker border */
+        box-shadow: var(--card-shadow);
+        margin-top: 16px;
+      }
+
+      .activity-title {
+        font-family: "Poppins", sans-serif;
+        font-weight: 600;
+        font-size: 18px;
+        color: var(--text-dark);
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding-bottom: 16px;
+        border-bottom: 2px solid var(--border-light); /* Thicker border */
+      }
+
+      .activity-list {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .activity-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+        padding: 20px;
+        background: white;
+        border-radius: 12px;
+        border: 2px solid var(--border-visible); /* Thicker border */
+        transition: var(--transition);
+      }
+
+      .activity-item:hover {
+        background: var(--secondary);
+        border-color: var(--border-dark);
+      }
+
+      .activity-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        color: white;
+        flex-shrink: 0;
+        border: 2px solid white;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .activity-icon.internship {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--accent-blue) 100%);
+      }
+
+      .activity-icon.notes {
+        background: linear-gradient(135deg, var(--accent-green) 0%, var(--accent-teal) 100%);
+      }
+
+      .activity-icon.services {
+        background: linear-gradient(135deg, var(--accent-orange) 0%, var(--accent-yellow) 100%);
+      }
+
+      .activity-icon.courses {
+        background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-pink) 100%);
+      }
+
+      .activity-content {
+        flex: 1;
+      }
+
+      .activity-text {
+        font-size: 14px;
+        color: var(--text-dark);
+        margin-bottom: 8px;
+        line-height: 1.5;
+      }
+
+      .activity-meta {
+        display: flex;
+        gap: 12px;
+        font-size: 12px;
+        color: var(--text-light);
+        flex-wrap: wrap;
+      }
+
+      .activity-skill {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-weight: 500;
+        padding: 4px 8px;
+        background: var(--secondary);
+        border-radius: 4px;
+        border: 1px solid var(--border-light);
+      }
+
+      .skill-improvement {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        color: var(--accent-green);
+        font-weight: 600;
+        padding: 4px 8px;
+        background: rgba(72, 187, 120, 0.1);
+        border-radius: 4px;
+        border: 1px solid rgba(72, 187, 120, 0.2);
+      }
+
+      /* Empty State */
+      .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: var(--text-light);
+        border: 2px dashed var(--border-visible);
+        border-radius: 12px;
+        margin: 8px 0;
+        background: var(--secondary);
+      }
+
+      .empty-icon {
+        font-size: 48px;
+        color: var(--border);
+        margin-bottom: 16px;
+        opacity: 0.5;
+      }
+
+      .empty-title {
+        font-family: "Poppins", sans-serif;
+        font-size: 18px;
+        margin-bottom: 8px;
+        color: var(--text-dark);
+      }
+
+      .empty-description {
+        font-size: 14px;
+        margin-bottom: 24px;
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      /* Footer */
+      .dashboard-footer {
+        text-align: center;
+        padding: 20px;
+        color: var(--text-light);
+        font-size: 13px;
+        border-top: 2px solid var(--border-light);
+        margin-top: 24px;
+        background: white;
+        border-radius: var(--card-radius);
+        border: 2px solid var(--border-visible);
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        body {
+          padding: 16px;
+        }
+
+        .main-container {
+          gap: 16px;
+        }
+
+        .top-bar {
+          padding: 16px;
+        }
+
+        .page-info {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .overview-header {
+          flex-direction: column;
+        }
+
+        .progress-indicator {
+          width: 100%;
+          justify-content: space-between;
+        }
+
+        .skills-categories {
+          justify-content: center;
+          padding: 16px;
+        }
+
+        .activity-item {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .activity-meta {
+          flex-direction: column;
+          gap: 4px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="main-container">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="logo">
+          <div class="logo-icon">U</div>
+          <div class="logo-text">UniSpace</div>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-title">Dashboard</div>
+          <ul class="nav-links">
+            <li><a class="nav-item" href="#"><i class="fas fa-home nav-icon"></i> <span class="nav-text">Overview</span></a></li>
+            <li><a class="nav-item" href="#"><i class="fas fa-chart-line nav-icon"></i> <span class="nav-text">Analytics</span></a></li>
+            <li><a class="nav-item" href="#"><i class="fas fa-calendar-alt nav-icon"></i> <span class="nav-text">Schedule</span></a></li>
+          </ul>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-title">Core Features</div>
+          <ul class="nav-links">
+            <li><a class="nav-item" href="#"><i class="fas fa-shopping-cart nav-icon"></i> <span class="nav-text">Marketplace</span></a></li>
+            <li><a class="nav-item" href="#"><i class="fas fa-concierge-bell nav-icon"></i> <span class="nav-text">Services</span></a></li>
+            <li><a class="nav-item" href="#"><i class="fas fa-book-open nav-icon"></i> <span class="nav-text">Resources</span></a></li>
+            <li><a class="nav-item" href="#"><i class="fas fa-briefcase nav-icon"></i> <span class="nav-text">Internship</span></a></li>
+            <li><a class="nav-item active" href="#"><i class="fas fa-star nav-icon"></i> <span class="nav-text">Skills</span></a></li>
+          </ul>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-title">Account</div>
+          <ul class="nav-links">
+            <li><a class="nav-item" href="#"><i class="fas fa-user nav-icon"></i> <span class="nav-text">Profile</span></a></li>
+            <li><a class="nav-item" href="#"><i class="fas fa-cog nav-icon"></i> <span class="nav-text">Settings</span></a></li>
+            <li><a class="nav-item" href="#"><i class="fas fa-question-circle nav-icon"></i> <span class="nav-text">Help</span></a></li>
+          </ul>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-title">Quick Stats</div>
+          <div class="quick-stats">
+            <div class="quick-stat">
+              <i class="fas fa-star" style="color: var(--accent-yellow);"></i>
+              <span class="quick-stat-text">24 skills tracked</span>
+            </div>
+            <div class="quick-stat">
+              <i class="fas fa-chart-line" style="color: var(--accent-green);"></i>
+              <span class="quick-stat-text">+8 this month</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <!-- Top Bar -->
+        <div class="top-bar">
+          <div class="page-info">
+            <div>
+              <h1 class="page-title">Skills Profile</h1>
+              <p class="page-subtitle">Track your technical & soft skills. Progress updates automatically via activities</p>
+            </div>
+            <div class="top-actions">
+              <button class="action-btn secondary" id="addSkillBtn">
+                <i class="fas fa-plus"></i> Add Skill
+              </button>
+              <button class="action-btn secondary">
+                <i class="fas fa-file-export"></i> Export
+              </button>
+              <div class="user-profile-btn">
+                <div class="user-avatar-small">JS</div>
+                <span>John Student</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Skills Overview -->
+        <section class="skills-overview">
+          <div class="overview-header">
+            <div>
+              <h2 class="overview-title">Your Skills Dashboard</h2>
+              <p class="overview-subtitle">Progress updates automatically from uploaded notes, offered services, and internship logs</p>
+            </div>
+            <div class="progress-indicator">
+              <div class="progress-circle" id="overallProgress">
+                <div class="progress-circle-inner">75%</div>
+              </div>
+              <div class="progress-text">
+                <strong>Overall Proficiency</strong><br>
+                18 of 24 skills at intermediate or higher
+              </div>
+            </div>
+          </div>
+          
+          <div class="overview-grid">
+            <div class="overview-card">
+              <div class="overview-card-title">
+                <i class="fas fa-laptop-code" style="color: var(--primary);"></i>
+                Technical Skills
+              </div>
+              <div class="overview-card-value">14</div>
+              <div class="overview-card-subvalue">+3 from internship</div>
+            </div>
+            
+            <div class="overview-card">
+              <div class="overview-card-title">
+                <i class="fas fa-users" style="color: var(--accent-green);"></i>
+                Soft Skills
+              </div>
+              <div class="overview-card-value">8</div>
+              <div class="overview-card-subvalue">+2 from services</div>
+            </div>
+            
+            <div class="overview-card">
+              <div class="overview-card-title">
+                <i class="fas fa-briefcase" style="color: var(--accent-purple);"></i>
+                Business Skills
+              </div>
+              <div class="overview-card-value">5</div>
+              <div class="overview-card-subvalue">+1 this month</div>
+            </div>
+            
+            <div class="overview-card">
+              <div class="overview-card-title">
+                <i class="fas fa-tools" style="color: var(--accent-orange);"></i>
+                Tools & Platforms
+              </div>
+              <div class="overview-card-value">7</div>
+              <div class="overview-card-subvalue">Mastered 3 tools</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Skills Categories -->
+        <div class="skills-categories">
+          <button class="category-btn active" data-category="all">All Skills</button>
+          <button class="category-btn" data-category="technical">Technical</button>
+          <button class="category-btn" data-category="soft">Soft Skills</button>
+          <button class="category-btn" data-category="business">Business</button>
+          <button class="category-btn" data-category="tools">Tools</button>
+          <button class="category-btn" data-category="improving">Improving</button>
+          <button class="category-btn" data-category="mastered">Mastered</button>
+        </div>
+
+        <!-- ========== SKILLS GRID CONTAINER ========== -->
+        <div class="skills-grid-container">
+          <div class="skills-grid-header">
+            <h3 class="skills-grid-title">
+              <i class="fas fa-star"></i> All Tracked Skills
+            </h3>
+            <div class="skills-count">24 Skills</div>
+          </div>
+          
+          <div class="skills-grid" id="skillsGrid">
+            <!-- JavaScript Skill -->
+            <div class="skill-card" data-category="technical" data-level="advanced">
+              <div class="skill-card-header">
+                <div class="skill-icon technical">
+                  <i class="fab fa-js"></i>
+                </div>
+                <div class="skill-info">
+                  <h3 class="skill-name">JavaScript</h3>
+                  <span class="skill-category">Technical • Programming</span>
+                  <div class="skill-level">
+                    <span class="level-badge advanced">Advanced</span>
+                    <span class="level-number">Level 8/10</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="progress-container">
+                <div class="progress-label">
+                  <span>Proficiency</span>
+                  <span>82%</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: 82%; background: linear-gradient(90deg, var(--primary), var(--accent-blue));"></div>
+                </div>
+              </div>
+              
+              <div class="activity-sources">
+                <div class="sources-title">
+                  <i class="fas fa-bolt"></i> Progress Sources
+                </div>
+                <div class="sources-list">
+                  <span class="source-tag internship">
+                    <i class="fas fa-briefcase"></i> Internship
+                  </span>
+                  <span class="source-tag notes">
+                    <i class="fas fa-file-alt"></i> Uploaded Notes
+                  </span>
+                  <span class="source-tag services">
+                    <i class="fas fa-concierge-bell"></i> Offered Services
+                  </span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- React Skill -->
+            <div class="skill-card" data-category="technical" data-level="intermediate">
+              <div class="skill-card-header">
+                <div class="skill-icon technical">
+                  <i class="fab fa-react"></i>
+                </div>
+                <div class="skill-info">
+                  <h3 class="skill-name">React</h3>
+                  <span class="skill-category">Technical • Frontend</span>
+                  <div class="skill-level">
+                    <span class="level-badge intermediate">Intermediate</span>
+                    <span class="level-number">Level 6/10</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="progress-container">
+                <div class="progress-label">
+                  <span>Proficiency</span>
+                  <span>65%</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: 65%; background: linear-gradient(90deg, var(--accent-blue), #61dafb);"></div>
+                </div>
+              </div>
+              
+              <div class="activity-sources">
+                <div class="sources-title">
+                  <i class="fas fa-bolt"></i> Progress Sources
+                </div>
+                <div class="sources-list">
+                  <span class="source-tag internship">
+                    <i class="fas fa-briefcase"></i> Internship
+                  </span>
+                  <span class="source-tag courses">
+                    <i class="fas fa-graduation-cap"></i> Online Courses
+                  </span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Communication Skill -->
+            <div class="skill-card" data-category="soft" data-level="advanced">
+              <div class="skill-card-header">
+                <div class="skill-icon soft">
+                  <i class="fas fa-comments"></i>
+                </div>
+                <div class="skill-info">
+                  <h3 class="skill-name">Communication</h3>
+                  <span class="skill-category">Soft Skill • Professional</span>
+                  <div class="skill-level">
+                    <span class="level-badge advanced">Advanced</span>
+                    <span class="level-number">Level 8/10</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="progress-container">
+                <div class="progress-label">
+                  <span>Proficiency</span>
+                  <span>78%</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: 78%; background: linear-gradient(90deg, var(--accent-green), var(--accent-teal));"></div>
+                </div>
+              </div>
+              
+              <div class="activity-sources">
+                <div class="sources-title">
+                  <i class="fas fa-bolt"></i> Progress Sources
+                </div>
+                <div class="sources-list">
+                  <span class="source-tag internship">
+                    <i class="fas fa-briefcase"></i> Team Meetings
+                  </span>
+                  <span class="source-tag services">
+                    <i class="fas fa-concierge-bell"></i> Client Services
+                  </span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Python Skill -->
+            <div class="skill-card" data-category="technical" data-level="intermediate">
+              <div class="skill-card-header">
+                <div class="skill-icon technical">
+                  <i class="fab fa-python"></i>
+                </div>
+                <div class="skill-info">
+                  <h3 class="skill-name">Python</h3>
+                  <span class="skill-category">Technical • Backend</span>
+                  <div class="skill-level">
+                    <span class="level-badge intermediate">Intermediate</span>
+                    <span class="level-number">Level 5/10</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="progress-container">
+                <div class="progress-label">
+                  <span>Proficiency</span>
+                  <span>55%</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: 55%; background: linear-gradient(90deg, #3776ab, var(--accent-blue));"></div>
+                </div>
+              </div>
+              
+              <div class="activity-sources">
+                <div class="sources-title">
+                  <i class="fas fa-bolt"></i> Progress Sources
+                </div>
+                <div class="sources-list">
+                  <span class="source-tag notes">
+                    <i class="fas fa-file-alt"></i> Study Notes
+                  </span>
+                  <span class="source-tag courses">
+                    <i class="fas fa-graduation-cap"></i> Courses
+                  </span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Project Management -->
+            <div class="skill-card" data-category="business" data-level="intermediate">
+              <div class="skill-card-header">
+                <div class="skill-icon business">
+                  <i class="fas fa-project-diagram"></i>
+                </div>
+                <div class="skill-info">
+                  <h3 class="skill-name">Project Management</h3>
+                  <span class="skill-category">Business • Leadership</span>
+                  <div class="skill-level">
+                    <span class="level-badge intermediate">Intermediate</span>
+                    <span class="level-number">Level 5/10</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="progress-container">
+                <div class="progress-label">
+                  <span>Proficiency</span>
+                  <span>52%</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: 52%; background: linear-gradient(90deg, var(--accent-purple), var(--accent-pink));"></div>
+                </div>
+              </div>
+              
+              <div class="activity-sources">
+                <div class="sources-title">
+                  <i class="fas fa-bolt"></i> Progress Sources
+                </div>
+                <div class="sources-list">
+                  <span class="source-tag internship">
+                    <i class="fas fa-briefcase"></i> Internship Projects
+                  </span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Git Skill -->
+            <div class="skill-card" data-category="tools" data-level="advanced">
+              <div class="skill-card-header">
+                <div class="skill-icon tool">
+                  <i class="fab fa-git-alt"></i>
+                </div>
+                <div class="skill-info">
+                  <h3 class="skill-name">Git & Version Control</h3>
+                  <span class="skill-category">Tools • Development</span>
+                  <div class="skill-level">
+                    <span class="level-badge advanced">Advanced</span>
+                    <span class="level-number">Level 7/10</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="progress-container">
+                <div class="progress-label">
+                  <span>Proficiency</span>
+                  <span>73%</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: 73%; background: linear-gradient(90deg, var(--accent-orange), var(--accent-yellow));"></div>
+                </div>
+              </div>
+              
+              <div class="activity-sources">
+                <div class="sources-title">
+                  <i class="fas fa-bolt"></i> Progress Sources
+                </div>
+                <div class="sources-list">
+                  <span class="source-tag internship">
+                    <i class="fas fa-briefcase"></i> Team Collaboration
+                  </span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Problem Solving -->
+            <div class="skill-card" data-category="soft" data-level="intermediate">
+              <div class="skill-card-header">
+                <div class="skill-icon soft">
+                  <i class="fas fa-lightbulb"></i>
+                </div>
+                <div class="skill-info">
+                  <h3 class="skill-name">Problem Solving</h3>
+                  <span class="skill-category">Soft Skill • Analytical</span>
+                  <div class="skill-level">
+                    <span class="level-badge intermediate">Intermediate</span>
+                    <span class="level-number">Level 6/10</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="progress-container">
+                <div class="progress-label">
+                  <span>Proficiency</span>
+                  <span>61%</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: 61%; background: linear-gradient(90deg, var(--accent-teal), var(--accent-cyan));"></div>
+                </div>
+              </div>
+              
+              <div class="activity-sources">
+                <div class="sources-title">
+                  <i class="fas fa-bolt"></i> Progress Sources
+                </div>
+                <div class="sources-list">
+                  <span class="source-tag internship">
+                    <i class="fas fa-briefcase"></i> Bug Fixing
+                  </span>
+                  <span class="source-tag notes">
+                    <i class="fas fa-file-alt"></i> Study Notes
+                  </span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Node.js Skill -->
+            <div class="skill-card" data-category="technical" data-level="intermediate">
+              <div class="skill-card-header">
+                <div class="skill-icon technical">
+                  <i class="fab fa-node-js"></i>
+                </div>
+                <div class="skill-info">
+                  <h3 class="skill-name">Node.js</h3>
+                  <span class="skill-category">Technical • Backend</span>
+                  <div class="skill-level">
+                    <span class="level-badge intermediate">Intermediate</span>
+                    <span class="level-number">Level 5/10</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="progress-container">
+                <div class="progress-label">
+                  <span>Proficiency</span>
+                  <span>50%</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: 50%; background: linear-gradient(90deg, #68a063, var(--accent-green));"></div>
+                </div>
+              </div>
+              
+              <div class="activity-sources">
+                <div class="sources-title">
+                  <i class="fas fa-bolt"></i> Progress Sources
+                </div>
+                <div class="sources-list">
+                  <span class="source-tag internship">
+                    <i class="fas fa-briefcase"></i> API Development
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <section class="recent-activity">
+          <h2 class="activity-title">
+            <i class="fas fa-history"></i> Recent Skill Improvements
+          </h2>
+          <div class="activity-list">
+            <div class="activity-item">
+              <div class="activity-icon internship">
+                <i class="fas fa-briefcase"></i>
+              </div>
+              <div class="activity-content">
+                <p class="activity-text">
+                  <strong>Internship Log:</strong> Implemented authentication system with JWT tokens and refresh functionality
+                </p>
+                <div class="activity-meta">
+                  <span class="activity-skill">
+                    <i class="fas fa-star" style="color: var(--primary);"></i>
+                    JavaScript: 82% (+3%)
+                  </span>
+                  <span class="activity-skill">
+                    <i class="fas fa-star" style="color: var(--accent-blue);"></i>
+                    Node.js: 50% (+5%)
+                  </span>
+                  <span class="skill-improvement">
+                    <i class="fas fa-arrow-up"></i>
+                    Improved 2 skills
+                  </span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="activity-item">
+              <div class="activity-icon notes">
+                <i class="fas fa-file-alt"></i>
+              </div>
+              <div class="activity-content">
+                <p class="activity-text">
+                  <strong>Uploaded Notes:</strong> Advanced React Patterns study notes including compound components and render props
+                </p>
+                <div class="activity-meta">
+                  <span class="activity-skill">
+                    <i class="fas fa-star" style="color: #61dafb;"></i>
+                    React: 65% (+4%)
+                  </span>
+                  <span class="skill-improvement">
+                    <i class="fas fa-arrow-up"></i>
+                    Improved 1 skill
+                  </span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="activity-item">
+              <div class="activity-icon services">
+                <i class="fas fa-concierge-bell"></i>
+              </div>
+              <div class="activity-content">
+                <p class="activity-text">
+                  <strong>Offered Service:</strong> Tutored JavaScript fundamentals to 3 students, explaining core concepts
+                </p>
+                <div class="activity-meta">
+                  <span class="activity-skill">
+                    <i class="fas fa-star" style="color: var(--primary);"></i>
+                    JavaScript: 82% (+2%)
+                  </span>
+                  <span class="activity-skill">
+                    <i class="fas fa-star" style="color: var(--accent-green);"></i>
+                    Communication: 78% (+3%)
+                  </span>
+                  <span class="skill-improvement">
+                    <i class="fas fa-arrow-up"></i>
+                    Improved 2 skills
+                  </span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="activity-item">
+              <div class="activity-icon courses">
+                <i class="fas fa-graduation-cap"></i>
+              </div>
+              <div class="activity-content">
+                <p class="activity-text">
+                  <strong>Course Completed:</strong> Data Structures & Algorithms in Python with certificate
+                </p>
+                <div class="activity-meta">
+                  <span class="activity-skill">
+                    <i class="fas fa-star" style="color: #3776ab;"></i>
+                    Python: 55% (+8%)
+                  </span>
+                  <span class="activity-skill">
+                    <i class="fas fa-star" style="color: var(--accent-teal);"></i>
+                    Problem Solving: 61% (+5%)
+                  </span>
+                  <span class="skill-improvement">
+                    <i class="fas fa-arrow-up"></i>
+                    Improved 2 skills
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="dashboard-footer">
+          <p>UniSpace Skills Profile • © 2024 All rights reserved</p>
+          <p style="margin-top: 8px; font-size: 12px;">Track, develop, and showcase your skills portfolio</p>
+        </footer>
+      </main>
+    </div>
+
+    <script>
+      // Category Filtering
+      const categoryBtns = document.querySelectorAll('.category-btn');
+      const skillCards = document.querySelectorAll('.skill-card');
+      const skillsCount = document.querySelector('.skills-count');
+      
+      categoryBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          // Update active button
+          categoryBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          
+          const category = btn.dataset.category;
+          let visibleCount = 0;
+          
+          // Filter skill cards
+          skillCards.forEach(card => {
+            if (category === 'all') {
+              card.style.display = 'block';
+              visibleCount++;
+            } else if (category === 'improving') {
+              // Show skills below 70%
+              const progressText = card.querySelector('.progress-label span:last-child').textContent;
+              const progress = parseInt(progressText);
+              if (progress < 70) {
+                card.style.display = 'block';
+                visibleCount++;
+              } else {
+                card.style.display = 'none';
+              }
+            } else if (category === 'mastered') {
+              // Show skills 80% or higher
+              const progressText = card.querySelector('.progress-label span:last-child').textContent;
+              const progress = parseInt(progressText);
+              if (progress >= 80) {
+                card.style.display = 'block';
+                visibleCount++;
+              } else {
+                card.style.display = 'none';
+              }
+            } else {
+              const cardCategory = card.dataset.category;
+              if (cardCategory === category) {
+                card.style.display = 'block';
+                visibleCount++;
+              } else {
+                card.style.display = 'none';
+              }
+            }
+            
+            // Add animation
+            if (card.style.display === 'block') {
+              card.style.animation = 'none';
+              setTimeout(() => {
+                card.style.animation = 'fadeIn 0.5s ease';
+              }, 10);
+            }
+          });
+          
+          // Update skills count
+          skillsCount.textContent = `${visibleCount} Skills`;
+        });
+      });
+      
+      // Add CSS animation
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .skill-card {
+          animation: fadeIn 0.5s ease;
+        }
+        
+        .progress-fill {
+          transition: width 1.5s ease-in-out;
+        }
+      `;
+      document.head.appendChild(style);
+      
+      // Animate progress bars on scroll
+      const observerOptions = {
+        threshold: 0.3
+      };
+      
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const progressFill = entry.target.querySelector('.progress-fill');
+            const currentWidth = progressFill.style.width;
+            progressFill.style.width = '0%';
+            
+            setTimeout(() => {
+              progressFill.style.width = currentWidth;
+            }, 300);
+            
+            // Only animate once
+            observer.unobserve(entry.target);
+          }
+        });
+      }, observerOptions);
+      
+      skillCards.forEach(card => {
+        observer.observe(card);
+      });
+      
+      // Add Skill Button
+      document.getElementById('addSkillBtn').addEventListener('click', () => {
+        alert('Add Skill functionality would open a modal here.\n\nIn a real application, users could:\n1. Select skill from database\n2. Set initial proficiency level\n3. Choose categories\n4. Add to their profile');
+      });
+      
+      // Update overall progress circle
+      function updateOverallProgress() {
+        const progressCircle = document.getElementById('overallProgress');
+        let totalProgress = 0;
+        let skillCount = 0;
+        
+        skillCards.forEach(card => {
+          if (card.style.display !== 'none') {
+            const progressText = card.querySelector('.progress-label span:last-child').textContent;
+            const progress = parseInt(progressText);
+            totalProgress += progress;
+            skillCount++;
+          }
+        });
+        
+        const averageProgress = Math.round(totalProgress / skillCount);
+        
+        // Update circle gradient
+        progressCircle.style.background = `conic-gradient(var(--primary) ${averageProgress}%, var(--border-light) 0)`;
+        
+        // Update text
+        progressCircle.querySelector('.progress-circle-inner').textContent = `${averageProgress}%`;
+        
+        // Update progress text
+        const intermediatePlus = Array.from(skillCards).filter(card => {
+          const progressText = card.querySelector('.progress-label span:last-child').textContent;
+          const progress = parseInt(progressText);
+          return progress >= 50;
+        }).length;
+        
+        document.querySelector('.progress-text strong').nextElementSibling.textContent = 
+          `${intermediatePlus} of ${skillCount} skills at intermediate or higher`;
+      }
+      
+      // Initialize
+      updateOverallProgress();
+      
+      // Simulate skill improvement from activity
+      function simulateSkillImprovement(skillName, improvementPercent) {
+        skillCards.forEach(card => {
+          const nameElement = card.querySelector('.skill-name');
+          if (nameElement.textContent.includes(skillName)) {
+            const progressText = card.querySelector('.progress-label span:last-child');
+            const progressBar = card.querySelector('.progress-fill');
+            
+            const currentProgress = parseInt(progressText.textContent);
+            const newProgress = Math.min(100, currentProgress + improvementPercent);
+            
+            progressText.textContent = `${newProgress}%`;
+            progressBar.style.width = `${newProgress}%`;
+            
+            // Update level if needed
+            const levelBadge = card.querySelector('.level-badge');
+            const levelNumber = card.querySelector('.level-number');
+            
+            if (newProgress >= 80 && !levelBadge.classList.contains('expert')) {
+              levelBadge.textContent = 'Expert';
+              levelBadge.className = 'level-badge expert';
+              levelNumber.textContent = 'Level 9/10';
+            } else if (newProgress >= 60 && !levelBadge.classList.contains('advanced')) {
+              levelBadge.textContent = 'Advanced';
+              levelBadge.className = 'level-badge advanced';
+              levelNumber.textContent = 'Level 7/10';
+            } else if (newProgress >= 40 && !levelBadge.classList.contains('intermediate')) {
+              levelBadge.textContent = 'Intermediate';
+              levelBadge.className = 'level-badge intermediate';
+              levelNumber.textContent = 'Level 5/10';
+            }
+            
+            // Animate the update
+            progressBar.style.transition = 'width 1s ease-in-out';
+            setTimeout(() => {
+              progressBar.style.width = `${newProgress}%`;
+            }, 100);
+            
+            updateOverallProgress();
+          }
+        });
+      }
+      
+      // Demo: Simulate skill improvement after 5 seconds
+      setTimeout(() => {
+        simulateSkillImprovement('React', 3);
+        simulateSkillImprovement('Problem Solving', 2);
+      }, 5000);
+    </script>
+  </body>
+</html>
